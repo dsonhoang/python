@@ -8,4 +8,6 @@ def find(driver2, link_to_open):
     text_value = driver2.find_element(By.ID, 'kode').text
   except:
     pass
+  if text_value == '':
+    print('Khong tim thay code')
   return text_value
