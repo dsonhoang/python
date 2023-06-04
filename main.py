@@ -1,4 +1,4 @@
 def printHello():
-  print("Hello")
+  print(arr[0])
 
 printHello()
