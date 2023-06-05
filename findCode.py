@@ -11,6 +11,8 @@ def find(driver2, link_to_open):
       pass
     if text_value == '':
       print('Khong tim thay code')
+    else:
+      print(text_value)
     return text_value
   except:
     return ''
