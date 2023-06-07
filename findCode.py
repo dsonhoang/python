@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-def find(driver2, link_to_open):
+def find(driver2, link_to_open, key):
   try:
     driver2.get(link_to_open)
     text_value = ''
@@ -11,16 +11,20 @@ def find(driver2, link_to_open):
       pass
     if text_value == '':
       a_tags = driver2.find_elements(By.TAG_NAME, 'a')
+      count = 0
       if a_tags is not None::
           for a_tag in a_tags[::-1]:
             if a_tag is not None:
               try:
+                count += 1
+                if count == 8:
+                  return ''
                 driver2.get(a_tag.get_attribute('href'))
                 p_tags = driver2.find_elements(By.TAG_NAME, 'p')
                 for p in p_tags:
                   if p is not None:
                     if 'code:' in p.text.lower():
-                      text_value = p.text
+                      text_value = p.text.strip()
                       print(text_value)
                       return text_value
               except:
