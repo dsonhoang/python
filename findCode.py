@@ -21,6 +21,7 @@ def find(driver2, link_to_open):
                   if p is not None:
                     if 'CODE:' in p.text:
                       text_value = p.text
+                      print(text_value)
                       return text_value
               except:
                 pass
