@@ -19,7 +19,7 @@ def find(driver2, link_to_open):
                 p_tags = driver2.find_elements(By.TAG_NAME, 'p')
                 for p in p_tags:
                   if p is not None:
-                    if 'CODE:' in p.text:
+                    if 'code:' in p.text.lower():
                       text_value = p.text
                       print(text_value)
                       return text_value
@@ -28,5 +28,7 @@ def find(driver2, link_to_open):
     else:
       print(text_value)
     return text_value
-  except:
+  except Exception as e:
+    if (key == 'admin'):
+      print(e)
     return ''
