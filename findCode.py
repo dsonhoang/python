@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 import time
 
 def matched_url(current_url, herf_url):
-	black_words = ['resource', 'sitemap', 'tentang-kami', 'upload','pasang', 'category', 'author', 'page', 'disclaimer', 'privacy', 'policy', 'about', 'contac', 'contact', 'tag', 'cookies', 'search', 'topic', 'topik', 'politica', 'legal', 'term']
+	black_words = ['resource', 'sitemap', 'tentang-kami', 'upload','pasang', 'category', 'author', 'page', 'disclaimer', 'privacy', 'policy', 'about', 'contac', 'contact', 'tag', 'cookies', 'search', 'topic', 'topik', 'politica', 'legal', 'term', 'menu', 'page']
 	if current_url == herf_url:
 		return False
 	domain1 = urlparse(current_url).netloc
@@ -35,7 +35,7 @@ def find_code(driver2, link_to_open, key):
                 for a in a_tags:
                     if a is not None:
                         try:
-                            href = a.get_attribute('href')
+                            href = a.get_attribute('href').split('#')[0]
                         except:
                             href = ''
                         if href != '' :
@@ -43,11 +43,7 @@ def find_code(driver2, link_to_open, key):
                                 continue
                             if href not in herfs:
                                 herfs.append(href)
-            count = 0
             for i in herfs:
-                count += 1
-                if count == 8:
-                    break
                 driver2.get(i)
                 p_tags = driver2.find_elements(By.TAG_NAME, 'p')
                 if p_tags is not None:
