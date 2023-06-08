@@ -42,8 +42,11 @@ def find_code(driver2, link_to_open, key):
                                 continue
                             if href not in herfs:
                                 herfs.append(href)
-
+            count = 0
             for i in herfs:
+		count += 1
+		if count == 8:
+		    break
                 driver2.get(i)
                 p_tags = driver2.find_elements(By.TAG_NAME, 'p')
                 if p_tags is not None:
