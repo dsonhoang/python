@@ -1,10 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import from urllib.parse import urlparse
+import time
 
 def matched_url(current_url, herf_url):
     black_words = ['resource', 'sitemap', 'tentang-kami', 'upload','pasang', 'category', 'author', 'page', 'disclaimer', 'privacy', 'policy', 'about', 'contac', 'contact', 'tag', 'cookies', 'search', 'topic', 'topik', 'politica', 'legal', 'term']
 	if current_url == herf_url:
-		return False
+	    return False
     # Get the domain name of the first URL
 	domain1 = urlparse(current_url).netloc
 
@@ -20,8 +22,9 @@ def matched_url(current_url, herf_url):
 	return True
 
 def find_code(driver2, link_to_open, key):
-    try:
+	try:
         driver2.get(link_to_open)
+		time.sleep(3)
         text_value = ''
         try:
             text_value = driver2.find_element(By.ID, 'kode').text
