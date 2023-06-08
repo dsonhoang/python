@@ -14,7 +14,7 @@ def matched_url(current_url, herf_url):
 		return False
 	for word in black_words:
 		if word in herf_url:
-		return False
+			return False
 	return True
 
 def find_code(driver2, link_to_open, key):
