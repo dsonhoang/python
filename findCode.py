@@ -1,25 +1,25 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import from urllib.parse import urlparse
+from urllib.parse import urlparse
 import time
 
 def matched_url(current_url, herf_url):
     black_words = ['resource', 'sitemap', 'tentang-kami', 'upload','pasang', 'category', 'author', 'page', 'disclaimer', 'privacy', 'policy', 'about', 'contac', 'contact', 'tag', 'cookies', 'search', 'topic', 'topik', 'politica', 'legal', 'term']
-	if current_url == herf_url:
-	    return False
+    if current_url == herf_url:
+        return False
     # Get the domain name of the first URL
-	domain1 = urlparse(current_url).netloc
+    domain1 = urlparse(current_url).netloc
 
     # Get the domain name of the second URL
-	domain2 = urlparse(herf_url).netloc
+    domain2 = urlparse(herf_url).netloc
 
     # Check if the domain names match
-	if domain1 != domain2 or len(herf_url) - 20 < len(domain1):
-		return False
-	for word in black_words:
-		if word in herf_url:
-			return False
-	return True
+    if domain1 != domain2 or len(herf_url) - 20 < len(domain1):
+        return False
+    for word in black_words:
+        if word in herf_url:
+	    return False
+    return True
 
 def find_code(driver2, link_to_open, key):
 	try:
