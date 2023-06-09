@@ -26,7 +26,9 @@ def find_code(driver2, link_to_open, key):
             text_value[0] = driver2.find_element(By.ID, 'kode').text
             text_value[1] = driver2.current_driver
         except:
-            pass
+            text_value[0] = ''
+            text_value[1] = ''
+            
         if text_value[0] == '':
             a_tags = driver2.find_elements(By.TAG_NAME, 'a')
             herfs = []
@@ -45,12 +47,15 @@ def find_code(driver2, link_to_open, key):
                             if href not in herfs:
                                 herfs.append(href)
             for i in herfs:
-                driver2.get(i)
+                try:
+                    driver2.get(i)
+                except:
+                    continue
                 p_tags = driver2.find_elements(By.TAG_NAME, 'p')
                 if p_tags is not None:
                     for p in p_tags:
                         if p is not None:
-                            if ('code:' in p.text.lower() or 'codes:' in p.text.lower()) and len(p.text) < 20:
+                            if ('code:' in p.text.lower() or 'codes:' in p.text.lower()) and len(p.text) < 25:
                                 print(p.text)
                                 text_value[0] = p.text
                                 text_value[1] = driver2.current_url
@@ -59,6 +64,5 @@ def find_code(driver2, link_to_open, key):
             print(text_value[0])
         return text_value
     except Exception as e:
-        if (key == 'admin'):
-            print(e)
-    return ''
+        print(e)
+    return ['', '']
