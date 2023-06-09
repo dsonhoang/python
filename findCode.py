@@ -30,6 +30,7 @@ def find_code(driver2, link_to_open, key):
         if text_value[0] == '':
             a_tags = driver2.find_elements(By.TAG_NAME, 'a')
             herfs = []
+            herfs.append(link_to_open)
 			
             if a_tags is not None:
                 for a in a_tags:
