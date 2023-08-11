@@ -46,7 +46,7 @@ def find_code(driver2, link_to_open, key):
                                 continue
                             if href not in herfs:
                                 herfs.append(href)
-            for i in herfs:
+            for i in herfs[::-1]:
                 try:
                     driver2.get(i)
                 except:
