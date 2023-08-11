@@ -55,7 +55,7 @@ def find_code(driver2, link_to_open, key):
                 if p_tags is not None:
                     for p in p_tags:
                         if p is not None:
-                            if ('code:' in p.text.lower() or 'codes:' in p.text.lower() or 'hint cd:' in p.text.lower()) and len(p.text) < 35 and len(p.text) > 6:
+                            if ('code :' in p.text.lower() or 'code:' in p.text.lower() or 'codes:' in p.text.lower() or 'hint cd:' in p.text.lower()) and len(p.text) < 35 and len(p.text) > 6:
                                 print(p.text)
                                 text_value[0] = p.text.split(':')[1].strip()
                                 text_value[1] = driver2.current_url
