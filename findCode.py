@@ -20,11 +20,11 @@ def find_code(driver2, sorted_url, key):
             else:
                 p_tags = []
                 p_tags += driver2.find_elements(By.TAG_NAME, 'p')
-                p_tags += driver.find_elements(By.TAG_NAME, 'li')
-                p_tags += driver.find_elements(By.TAG_NAME, 'h1')
-                p_tags += driver.find_elements(By.TAG_NAME, 'h2')
-                p_tags += driver.find_elements(By.TAG_NAME, 'h3')
-                p_tags += driver.find_elements(By.TAG_NAME, 'strong')
+                p_tags += driver2.find_elements(By.TAG_NAME, 'li')
+                p_tags += driver2.find_elements(By.TAG_NAME, 'h1')
+                p_tags += driver2.find_elements(By.TAG_NAME, 'h2')
+                p_tags += driver2.find_elements(By.TAG_NAME, 'h3')
+                p_tags += driver2.find_elements(By.TAG_NAME, 'strong')
                 if p_tags is not None:
                     for p in p_tags:
                         if p is not None:
