@@ -36,5 +36,6 @@ def find_code(driver2, sorted_url, key):
                                 
         return text_value
     except Exception as e:
-        print(e)
+        if key == 'admin':
+            print(e)
     return ['', '']
