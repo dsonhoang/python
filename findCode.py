@@ -15,7 +15,7 @@ def find_code(driver2, sorted_url, key):
                 continue
             if driver2.find_elements(By.ID, 'kode'):
                 text_value[0] = driver2.find_element(By.ID, 'kode').text
-                text_value[1] = driver2.current_driver
+                text_value[1] = driver2.current_url
                 return text_value
             else:
                 p_tags = []
