@@ -4,6 +4,8 @@ import time
 
 def find_code(driver2, sorted_url, key):
     try:
+        if len(sorted_url) == 0:
+            return ['', '']
         driver2.get(sorted_url[0])
         time.sleep(3)
         text_value = ['', '']
