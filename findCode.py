@@ -21,7 +21,7 @@ def find_code(driver2, sorted_url, key):
                 return text_value
             elif driver2.find_elements(By.CLASS_NAME, 'has-text-align-center'):
                 text_code = driver2.find_elements(By.CLASS_NAME, 'has-text-align-center')[-1].text
-                if 'code:' in text.lower():
+                if 'code:' in text_code.lower():
                     text_value[0] = text_code.split(':')[1].strip()
                     text_value[1] = driver2.current_url
                     return text_value
