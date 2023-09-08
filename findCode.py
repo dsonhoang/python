@@ -31,6 +31,13 @@ def find_code(driver2, sorted_url, key):
                     text_value[0] = text_code.strip()
                 text_value[1] = driver2.current_url
                 return text_value
+            elif driver2.find_elements(By.CLASS_NAME, 'code-block-6'):
+                text_code = driver2.find_elements(By.CLASS_NAME, 'code-block-6')[-1].text
+                if ':' in text_code.lower():
+                    text_value[0] = text_code.split(':')[1].strip()
+                else:
+                    text_value[0] = text_code.strip()
+                text_value[1] = driver2.current_url
             else:
                 p_tags = []
                 p_tags += driver2.find_elements(By.TAG_NAME, 'p')
