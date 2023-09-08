@@ -16,19 +16,21 @@ def find_code(driver2, sorted_url, key):
             except:
                 continue
             if driver2.find_elements(By.ID, 'kode'):
-                text_value[0] = driver2.find_element(By.ID, 'kode').text
+                s = driver2.find_element(By.ID, 'kode').text
+                if ':' in s:
+                    text_value[0] = s.split(':')[1]
+                else:
+                    text_value[0] = s
                 text_value[1] = driver2.current_url
                 return text_value
             elif driver2.find_elements(By.CLASS_NAME, 'has-text-align-center'):
                 text_code = driver2.find_elements(By.CLASS_NAME, 'has-text-align-center')[-1].text
-                if 'code:' in text_code.lower():
+                if ':' in text_code.lower():
                     text_value[0] = text_code.split(':')[1].strip()
-                    text_value[1] = driver2.current_url
-                    return text_value
                 else:
                     text_value[0] = text_code.strip()
-                    text_value[1] = driver2.current_url
-                    return text_value
+                text_value[1] = driver2.current_url
+                return text_value
             else:
                 p_tags = []
                 p_tags += driver2.find_elements(By.TAG_NAME, 'p')
@@ -40,12 +42,11 @@ def find_code(driver2, sorted_url, key):
                 if p_tags is not None:
                     for p in p_tags:
                         if p is not None:
-                            if ('code :' in p.text.lower() or 'code:' in p.text.lower() or 'codes:' in p.text.lower() or 'hint cd:' in p.text.lower()) and len(p.text) < 35 and len(p.text) > 6:
-                                print(p.text)
+                            text_lower = p.text.lower()
+                            if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 6 < len(p.text) < 35:
                                 text_value[0] = p.text.split(':')[1].strip()
                                 text_value[1] = driver2.current_url
                                 return text_value
-                                
         return text_value
     except Exception as e:
         if key == 'admin':
