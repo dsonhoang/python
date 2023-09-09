@@ -1,56 +1,57 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-
-def find_code(driver2, sorted_url, key):
+async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
             return ['', '']
-        driver2.get(sorted_url[0])
-        time.sleep(3)
+        
+        await page.goto(sorted_url[0])
+        await asyncio.sleep(3)
         text_value = ['', '']
-		
-        for i in sorted_url[::-1]:
+
+        for i in reversed(sorted_url):
             try:
-                driver2.get(i)
+                await page.goto(i)
             except:
                 continue
-            if driver2.find_elements(By.ID, 'kode'):
-                s = driver2.find_element(By.ID, 'kode').text
+
+            # Check if the element with ID 'kode' is present
+            kode_element = await page.querySelector('#kode')
+            if kode_element:
+                s = await page.evaluate('(element) => element.textContent', kode_element)
+
                 if ':' in s:
-                    text_value[0] = s.split(':')[1]
+                    text_value[0] = s.split(':')[1].strip()
                 else:
                     text_value[0] = s
-                text_value[1] = driver2.current_url
+                text_value[1] = page.url
                 return text_value
-            elif driver2.find_elements(By.CLASS_NAME, 'has-text-align-center'):
-                text_code = driver2.find_elements(By.CLASS_NAME, 'has-text-align-center')[-1].text
+
+            # Check if elements with class 'has-text-align-center' are present
+            center_elements = await page.querySelectorAll('.has-text-align-center')
+            if center_elements:
+                text_code = await page.evaluate('(element) => element.textContent', center_elements[-1])
+
                 if ':' in text_code.lower():
                     text_value[0] = text_code.split(':')[1].strip()
                 else:
                     text_value[0] = text_code.strip()
-                text_value[1] = driver2.current_url
+                text_value[1] = page.url
                 return text_value
-            else:
-                p_tags = []
-                p_tags += driver2.find_elements(By.TAG_NAME, 'p')
-                p_tags += driver2.find_elements(By.TAG_NAME, 'li')
-                p_tags += driver2.find_elements(By.TAG_NAME, 'h1')
-                p_tags += driver2.find_elements(By.TAG_NAME, 'h2')
-                p_tags += driver2.find_elements(By.TAG_NAME, 'h3')
-                p_tags += driver2.find_elements(By.TAG_NAME, 'strong')
-                if p_tags is not None:
-                    for p in p_tags:
-                        if p is not None:
-                            text_lower = p.text.lower()
-                            if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 6 < len(p.text) < 35:
-                                text_value[0] = p.text.split(':')[1].strip()
-                                text_value[1] = driver2.current_url
-                                return text_value
+
+            # Check various elements for specific keywords
+            p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong')
+            if p_tags:
+                for p_element in p_tags:
+                    text_lower = await page.evaluate('(element) => element.textContent', p_element)
+                    text_lower = text_lower.lower()
+                    if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 6 < len(text_lower) < 35:
+                        text_value[0] = text_lower.split(':')[1].strip()
+                        text_value[1] = page.url
+                        return text_value
+
         return text_value
     except Exception as e:
         if key == 'admin':
-            print("exception at find_code ", e)
+            print("Exception at find_code ", e)
             import traceback
             traceback.print_exc()
     return ['', '']
