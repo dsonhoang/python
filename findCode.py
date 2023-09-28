@@ -21,7 +21,7 @@ async def find_code(page, sorted_url, key):
             timer_code = await page.querySelector('.hurrytimer-campaign-message')
             if timer_code:
                 s = await page.evaluate('(element) => element.textContent', timer_code)
-                 if ':' in s:
+                if ':' in s:
                     text_value[0] = s.split(':')[1].strip()
                 else:
                     text_value[0] = s
