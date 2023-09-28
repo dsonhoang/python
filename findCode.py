@@ -18,6 +18,15 @@ async def find_code(page, sorted_url, key):
             timer = await page.querySelector('.hurrytimer-cdt')
             if timer:
                 await asyncio.sleep(21)
+            timer_code = await page.querySelector('.hurrytimer-campaign-message')
+            if timer_code:
+                s = await page.evaluate('(element) => element.textContent', timer_code)
+                 if ':' in s:
+                    text_value[0] = s.split(':')[1].strip()
+                else:
+                    text_value[0] = s
+                text_value[1] = page.url
+                return text_value
             kode_element = await page.querySelector('#kode')
             if kode_element:
                 s = await page.evaluate('(element) => element.textContent', kode_element)
