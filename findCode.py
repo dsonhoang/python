@@ -11,7 +11,7 @@ async def find_code(page, sorted_url, key):
         for i in reversed(sorted_url):
             try:
                 await page.goto(i)
-                await asyncio.sleep(2)
+                #await asyncio.sleep(2)
             except:
                 continue
 
