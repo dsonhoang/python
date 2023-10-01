@@ -63,7 +63,7 @@ async def find_code(page, sorted_url, key):
                 return text_value
 
             # Check various elements for specific keywords
-            p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong')
+            p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span')
             if p_tags:
                 for p_element in p_tags:
                     text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
