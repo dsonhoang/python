@@ -7,8 +7,9 @@ async def find_code(page, sorted_url, key):
         if len(sorted_url) == 0:
             return ['', '']
         text_value = ['', '']
-
+        count = 0
         for i in reversed(sorted_url):
+            count += 1
             try:
                 await page.goto(i)
                 #await asyncio.sleep(2)
@@ -17,9 +18,11 @@ async def find_code(page, sorted_url, key):
 
             # Check if the element with ID 'kode' is present
             if await page.querySelectorAll('.hurrytimer-cdt'):
-                await asyncio.sleep(30)
+                await asyncio.sleep(25)
             elif await page.querySelectorAll('.detail_lagi'):
-                await asyncio.sleep(30)
+                if count == 7:
+                    return ['', '']
+                await asyncio.sleep(22)
                 code_block = await page.querySelectorAll('.detail_lagi')
                 code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
                 code_block_text = code_block_text.strip()
