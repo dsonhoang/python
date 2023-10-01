@@ -20,7 +20,7 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.hurrytimer-cdt'):
                 await asyncio.sleep(25)
             elif await page.querySelectorAll('.detail_lagi'):
-                if count >= 5:
+                if count >= 4:
                     await asyncio.sleep(12)
                 if count == 7:
                     return ['', '']
