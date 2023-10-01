@@ -28,7 +28,7 @@ async def find_code(page, sorted_url, key):
                 code_block = await page.querySelectorAll('.detail_lagi')
                 code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
                 code_block_text = code_block_text.strip()
-                print(code_block_text)
+                print("aaa", code_block_text)
                 if len(code_block_text.split(':')[1].strip()) > 0:
                     s = code_block_text.split(':')[1].strip()
                     if ':' in s:
