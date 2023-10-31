@@ -12,6 +12,7 @@ async def find_code(page, sorted_url, key):
             count += 1
             try:
                 await page.goto(i)
+                await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
                 #await asyncio.sleep(2)
             except:
                 continue
