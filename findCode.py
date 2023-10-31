@@ -26,6 +26,7 @@ async def find_code(page, sorted_url, key):
                 try:
                     time_wait = await page.querySelector('.info_detik')
                     time_wait = await page.evaluate('(element) => element.textContent', time_wait)
+                    print(time_wait)
                 except:
                     time_wait = None
                 if time_wait:
