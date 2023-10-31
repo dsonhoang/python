@@ -21,11 +21,21 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.hurrytimer-cdt'):
                 await asyncio.sleep(30)
             elif await page.querySelectorAll('.detail_lagi'):
-                if count >= 5:
-                    await asyncio.sleep(12)
                 if count == 7:
                     return ['', '']
-                await asyncio.sleep(30)
+                try:
+                    time_wait = await page.querySelector('.info_detik')
+                    time_wait = await page.evaluate('(element) => element.textContent', time_wait)
+                except:
+                    time_wait = None
+                if time_wait:
+                    await asyncio.sleep(int(time_wait.strip()) + 5)
+                else:
+                    if count >= 5:
+                        await asyncio.sleep(30 + 12)
+                    else:
+                        await asyncio.sleep(30)
+                
                 code_block = await page.querySelectorAll('.detail_lagi')
                 code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
                 code_block_text = code_block_text.strip()
