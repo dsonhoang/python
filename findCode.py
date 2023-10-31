@@ -30,6 +30,8 @@ async def find_code(page, sorted_url, key):
                     time_wait = None
                 if time_wait:
                     await asyncio.sleep(int(time_wait.strip()) + 5)
+                    if count >= 5:
+                        await asyncio.sleep(12)
                 else:
                     if count >= 5:
                         await asyncio.sleep(30 + 12)
