@@ -26,7 +26,6 @@ async def find_code(page, sorted_url, key):
                 try:
                     current_page_num = int(current_page_num.strip())
                 except:
-                    print("Error page num", current_page_num)
                     current_page_num = 0
 
                 if current_page_num > num_pages:
