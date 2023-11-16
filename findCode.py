@@ -29,7 +29,7 @@ async def find_code(page, sorted_url, key):
                 except:
                     time_wait = None
                 if time_wait:
-                    await asyncio.sleep(wait_time + 5)
+                    await asyncio.sleep(time_wait + 5)
                 else:
                     await asyncio.sleep(30)
                 
