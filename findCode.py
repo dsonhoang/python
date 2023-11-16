@@ -24,7 +24,7 @@ async def find_code(page, sorted_url, key):
             elif await page.querySelectorAll('.detail_lagi'):
                 current_page_num = await page.evaluate('(element) => element.textContent', await page.querySelector('.info_page'))
                 try:
-                    current_page_num = int(current_page_num.strip)
+                    current_page_num = int(current_page_num.strip())
                 except:
                     print("Error page num", current_page_num)
                     current_page_num = 0
