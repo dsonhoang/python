@@ -13,7 +13,6 @@ async def find_code(page, sorted_url, key):
             try:
                 await page.goto(i)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
-                #await asyncio.sleep(2)
             except:
                 continue
 
@@ -21,22 +20,18 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.hurrytimer-cdt'):
                 await asyncio.sleep(30)
             elif await page.querySelectorAll('.detail_lagi'):
-                if count == 9:
+                if count == 10:
                     return ['', '']
                 try:
                     time_wait = await page.querySelector('.info_detik')
                     time_wait = await page.evaluate('(element) => element.textContent', time_wait)
+                    time_wait = int(time_wait.strip())
                 except:
                     time_wait = None
                 if time_wait:
-                    await asyncio.sleep(int(time_wait.strip()) + 5)
-                    if count >= 5:
-                        await asyncio.sleep(20)
+                    await asyncio.sleep(wait_time + 5)
                 else:
-                    if count >= 5:
-                        await asyncio.sleep(30 + 15)
-                    else:
-                        await asyncio.sleep(30)
+                    await asyncio.sleep(30)
                 
                 code_block = await page.querySelectorAll('.detail_lagi')
                 code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
