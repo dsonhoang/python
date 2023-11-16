@@ -8,6 +8,8 @@ async def find_code(page, sorted_url, key):
             return ['', '']
         text_value = ['', '']
         count = 0
+
+        num_pages = 0
         for i in reversed(sorted_url):
             count += 1
             try:
@@ -20,7 +22,17 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.hurrytimer-cdt'):
                 await asyncio.sleep(30)
             elif await page.querySelectorAll('.detail_lagi'):
-                if count == 10:
+                current_page_num = await page.evaluate('(element) => element.textContent', await page.querySelector('.info_page'))
+                try:
+                    current_page_num = int(current_page_num.strip)
+                except:
+                    print("Error page num")
+                    current_page_num = 0
+
+                if current_page_num > num_pages:
+                    num_pages = current_page_num
+                    
+                if count > num_pages + 2:
                     return ['', '']
                 try:
                     time_wait = await page.querySelector('.info_detik')
