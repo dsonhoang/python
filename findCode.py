@@ -14,6 +14,7 @@ async def find_code(page, sorted_url, key):
             count += 1
             try:
                 await page.goto(i)
+                await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
                 continue
@@ -102,6 +103,7 @@ async def find_code(page, sorted_url, key):
                             if 'auto link code :' and 'http' in text_lower:
                                 link_code = text_lower.split('auto link code :')[1].strip()
                                 await page.goto(link_code)
+                                await asyncio.sleep(1)
                                 p_tags_2 = await page.querySelectorAll('p, li, h1, h2, h3, strong, span')
                                 for p_element_2 in p_tags_2[::-1]:
                                     tmp_text_ = await page.evaluate('(element) => element.textContent', p_element_2)
@@ -128,9 +130,14 @@ async def find_code(page, sorted_url, key):
                     page_numbers_urls.append(current_page_url)
                 for j in page_numbers_urls:
                     await page.goto(j)
+                    await asyncio.sleep(1)
                     await find_code_by_p(page, text_value)
+                    if text_value[0] is not None and text_value[0] != '':
+                      return text_value
             else:
                 await find_code_by_p(page, text_value)
+                if text_value[0] is not None and text_value[0] != '':
+                    return text_value
                 
         return text_value
     except Exception as e:
