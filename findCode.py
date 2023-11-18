@@ -104,12 +104,14 @@ async def find_code(page, sorted_url, key):
                             await page.goto(link_code)
                             p_tags_2 = await page.querySelectorAll('p, li, h1, h2, h3, strong, span')
                             for p_element_2 in p_tags_2[::-1]:
-                                tmp_text = await page.evaluate('(element) => element.textContent', p_element_2)
-                                tmp_text = tmp_text.lower()
+                                tmp_text_ = await page.evaluate('(element) => element.textContent', p_element_2)
+                                tmp_text = tmp_text_.lower()
                                 if any(keyword2 in tmp_text for keyword2 in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(tmp_text) < 55:
-                                    text_value[0] = tmp_text.split(':')[1].strip()
+                                    text_value[0] = tmp_text_.split(':')[1].strip()
                                     text_value[1] = page.url
                                     return text_value
+                        if 'https' in text_lower:
+                            continue
                         text_value[0] = text_lower_.split(':')[1].strip()
                         text_value[1] = page.url
                         return text_value
