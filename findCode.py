@@ -93,12 +93,23 @@ async def find_code(page, sorted_url, key):
             # Check various elements for specific keywords
             p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span')
             if p_tags:
-                for p_element in p_tags:
+                for p_element in p_tags[::-1]:
                     text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
                     text_lower = text_lower_.lower()
-                    if 'https' in text_lower:
+                    if 'prnt' in text_lower or 'manual' in text_lower:
                         continue
                     if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55:
+                        if 'auto link code :' and 'http' in text_lower:
+                            link_code = text_lower.split('auto link code :')[1].strip()
+                            await page.goto(link_code)
+                            p_tags_2 = await page.querySelectorAll('p, li, h1, h2, h3, strong, span')
+                            for p_element_2 in p_tags_2[::-1]:
+                                tmp_text = await page.evaluate('(element) => element.textContent', p_element_2)
+                                tmp_text = tmp_text.lower()
+                                if any(keyword2 in tmp_text for keyword2 in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(tmp_text) < 55:
+                                    text_value[0] = tmp_text.split(':')[1].strip()
+                                    text_value[1] = page.url
+                                    return text_value
                         text_value[0] = text_lower_.split(':')[1].strip()
                         text_value[1] = page.url
                         return text_value
