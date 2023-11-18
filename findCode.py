@@ -96,6 +96,8 @@ async def find_code(page, sorted_url, key):
                 for p_element in p_tags:
                     text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
                     text_lower = text_lower_.lower()
+                    if 'https' in text_lower:
+                        continue
                     if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55:
                         text_value[0] = text_lower_.split(':')[1].strip()
                         text_value[1] = page.url
