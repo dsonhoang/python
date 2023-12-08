@@ -43,9 +43,11 @@ async def find_code(page, sorted_url, key):
                 except:
                     time_wait = None
                 if time_wait:
-                    await asyncio.sleep(time_wait + 5)
+                    await asyncio.sleep(time_wait + 3)
                 else:
                     await asyncio.sleep(30)
+                if num_pages - count <= 1:
+                    await asyncio.sleep(12)
                 
                 code_block = await page.querySelectorAll('.detail_lagi')
                 code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
