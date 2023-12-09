@@ -10,7 +10,8 @@ async def find_code(page, sorted_url, key):
         count = 0
 
         num_pages = 0
-        for i in reversed(sorted_url):
+        #for i in reversed(sorted_url):
+        for i in sorted_url:
             count += 1
             try:
                 await page.goto(i)
