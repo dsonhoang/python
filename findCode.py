@@ -20,7 +20,7 @@ async def find_code(page, sorted_url, key):
                 continue
 
             # Check if the element with ID 'kode' is present
-            if await page.querySelectorAll('.hurrytimer-cdt'):
+            if await page.querySelectorAll('.hurrytimer-cdt') and not await page.querySelectorAll('.hurrytimer-headline'):
                 await asyncio.sleep(30)
                 if not (await page.querySelectorAll('.hurrytimer-campaign-message')):
                     await asyncio.sleep(40)
