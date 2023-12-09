@@ -113,11 +113,15 @@ async def find_code(page, sorted_url, key):
                                     tmp_text = tmp_text_.lower()
                                     if any(keyword2 in tmp_text for keyword2 in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(tmp_text) < 55:
                                         text_value[0] = tmp_text_.split(':')[1].strip()
+                                        if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
+                                            text_value[0] = text_value[0][1:-1]
                                         text_value[1] = page.url
                                         return text_value
                             if 'https' in text_lower:
                                 continue
                             text_value[0] = text_lower_.split(':')[1].strip()
+                            if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
+                                text_value[0] = text_value[0][1:-1]
                             text_value[1] = page.url
                             return text_value
             # Check various elements for specific keywords
