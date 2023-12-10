@@ -14,6 +14,8 @@ async def find_code(page, sorted_url, key):
         #for i in sorted_url:
             count += 1
             try:
+                if 'frankenstein' in i:
+                    i = 'https://frankenstein45.com/inter/nine-guilt-free-donate-car-tips/'
                 await page.goto(i)
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
