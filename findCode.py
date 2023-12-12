@@ -22,7 +22,7 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
-            if await page.querySelectorAll('.hurrytimer-cdt') and (await page.querySelectorAll('.hurrytimer-headline') or count == 1):
+            if await page.querySelectorAll('.hurrytimer-cdt'):
                 await asyncio.sleep(30)
                 if not (await page.querySelectorAll('.hurrytimer-campaign-message')):
                     await asyncio.sleep(40)
@@ -103,7 +103,7 @@ async def find_code(page, sorted_url, key):
                         text_lower = text_lower_.lower()
                         if 'prnt' in text_lower or 'manual' in text_lower:
                             continue
-                        if any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55:
+                        if (any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55) or ('code for proof' in text_lower)::
                             if 'auto link code :' and 'http' in text_lower:
                                 link_code = text_lower.split('auto link code :')[1].strip()
                                 await page.goto(link_code)
