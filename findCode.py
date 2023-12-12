@@ -22,7 +22,7 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
-            if await page.querySelectorAll('.hurrytimer-cdt'):
+            if await page.querySelectorAll('.hurrytimer-cdt') and page.querySelectorAll('.hurrytimer-headline'):
                 await asyncio.sleep(30)
                 if not (await page.querySelectorAll('.hurrytimer-campaign-message')):
                     await asyncio.sleep(40)
