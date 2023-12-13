@@ -67,6 +67,8 @@ async def find_code(page, sorted_url, key):
             if timer_code:
                 s = await page.evaluate('(element) => element.textContent', timer_code)
                 if ':' in s:
+                    if 'Worker' in s:
+                        s = s.split('Worker')[1]
                     text_value[0] = s.split(':')[1].strip()
                 else:
                     text_value[0] = s
