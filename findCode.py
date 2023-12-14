@@ -84,10 +84,16 @@ async def find_code(page, sorted_url, key):
                 except:
                     return ['','']
 
-            if await page.querySelectorAll('.hurrytimer-cdt') and await page.querySelectorAll('.hurrytimer-headline'):
-                await asyncio.sleep(30)
-                if not (await page.querySelectorAll('.hurrytimer-campaign-message')):
-                    await asyncio.sleep(40)
+            elif await page.querySelectorAll('.hurrytimer-cdt'):
+                if await page.querySelectorAll('.hurrytimer-headline'):
+                    headline = await page.querySelector('.hurrytimer-headline')
+                    headline_text = await page.evaluate('(element) => element.textContent', headline)
+                    headline_text = headline_text.lower()
+                    if 'next' in headline_text:
+                        continue
+                else:
+                    await asyncio.sleep(30)
+                    
             elif await page.querySelectorAll('.detail_lagi'):
                 current_page_num = await page.evaluate('(element) => element.textContent', await page.querySelector('.info_page'))
                 try:
