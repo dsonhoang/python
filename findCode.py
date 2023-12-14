@@ -22,6 +22,66 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
+            if await page.querySelectorAll('#pcode'):
+                try:
+                    from urllib.parse import urlparse
+                    def get_domain(url):
+                       parsed_url = urlparse(url)
+                       domain = parsed_url.netloc
+                       if domain.startswith("www."):
+                          domain = domain[4:]
+                       return domain
+                    domain = get_domain(i)
+                    js_code1 = f"""
+                       jQuery.ajax({{
+                            type: "POST",
+                            url: "https://{domain}/wp-admin/admin-ajax.php",
+                            data: {{
+                                action: "klik_iklan",
+                                masuk: 'gass',
+                            }},
+                            dataType: 'json',
+                            complete: function (response) {{
+                            }},
+                       }});
+                    """
+        
+                    await page.evaluate(js_code1)
+                    await asyncio.sleep(30)
+        
+                    js_code2 = f"""
+                       jQuery.ajax({{
+                            type: "POST",
+                            url: "https://{domain}/wp-admin/admin-ajax.php",
+                            data: {{
+                                action: "validasi_iklan",
+                                masuk: 'gass',
+                            }},
+                            dataType: 'json',
+                            complete: function (response) {{
+                                let hasil = JSON.parse(response.responseText);
+                                if (hasil.status == 'isi') {{
+                                    var elem = document.querySelector('#pcode');
+                                    elem.innerHTML = "<strong>Pcode: " + hasil.pcode + "</strong>";
+                                }} else {{
+                                    var elem = document.querySelector('#pcode');
+                                    elem.innerHTML = "<strong>Pcode will appear after do the&nbsp;step5</strong>";
+                                }}
+                            }},
+                       }});
+                    """
+        
+                    await page.evaluate(js_code2)
+                    await asyncio.sleep(5)
+                    pcode = await page.querySelector("#pcode")
+                    pcode_text = await page.evaluate("(element) => element.textContent", pcode)
+                    if pcode_text:
+                        text_value[0] = pcode_text.strip()
+                        text_value[1] = page.url
+                        return text_value
+                except:
+                    return ['','']
+
             if await page.querySelectorAll('.hurrytimer-cdt') and page.querySelectorAll('.hurrytimer-headline'):
                 await asyncio.sleep(30)
                 if not (await page.querySelectorAll('.hurrytimer-campaign-message')):
