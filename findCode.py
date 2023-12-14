@@ -92,6 +92,7 @@ async def find_code(page, sorted_url, key):
                     headline_text = await page.evaluate('(element) => element.textContent', headline)
                     headline_text = headline_text.lower()
                     if 'next' in headline_text:
+                        print("next")
                         continue
                 else:
                     await asyncio.sleep(30)
