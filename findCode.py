@@ -94,6 +94,8 @@ async def find_code(page, sorted_url, key):
                     if 'next' in headline_text:
                         print("next")
                         continue
+                    else:
+                        await asyncio.sleep(30)
                 else:
                     await asyncio.sleep(30)
                     
