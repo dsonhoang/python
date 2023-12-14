@@ -76,6 +76,8 @@ async def find_code(page, sorted_url, key):
                     pcode = await page.querySelector("#pcode")
                     pcode_text = await page.evaluate("(element) => element.textContent", pcode)
                     if pcode_text:
+                        if ':' in pcode_text:
+                            pcode_text = pcode_text.split(':')[1].strip()
                         text_value[0] = pcode_text.strip()
                         text_value[1] = page.url
                         return text_value
