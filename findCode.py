@@ -21,8 +21,16 @@ async def find_code(page, sorted_url, key):
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
                 continue
-
-            if await page.querySelectorAll('#pcode'):
+            if await page.querySelectorAll('#loading'):
+                await asyncio.sleep(25)
+                if await page.querySelectorAll('#generated-code'):
+                    code_span = await page.querySelector('#generated-code')
+                    code_span_text = await page.evaluate('(element) => element.textContent', code_span)
+                    code_span_text = code_span_text.strip()
+                    text_value[0] = code_span_text
+                    text_value[1] = page.url
+                    return text_value
+            elif await page.querySelectorAll('#pcode'):
                 try:
                     from urllib.parse import urlparse
                     def get_domain(url):
