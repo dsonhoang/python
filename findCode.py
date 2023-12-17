@@ -91,7 +91,9 @@ async def find_code(page, sorted_url, key):
                         text_value[0] = pcode_text.strip()
                         text_value[1] = page.url
                         return text_value
-                except:
+                except Exception as e:
+                    if key == 'admin':
+                        print(e)
                     return ['','']
 
             elif await page.querySelectorAll('.hurrytimer-cdt'):
