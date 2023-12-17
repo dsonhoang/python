@@ -31,8 +31,6 @@ async def find_code(page, sorted_url, key):
                     text_value[1] = page.url
                     return text_value
             elif await page.querySelectorAll('#pcode'):
-                if key == 'admin':
-                    print("Pcode")
                 try:
                     from urllib.parse import urlparse
                     def get_domain(url):
@@ -95,7 +93,9 @@ async def find_code(page, sorted_url, key):
                         return text_value
                 except Exception as e:
                     if key == 'admin':
-                        print(e)
+                        print("Exception at find_code ", e)
+                        import traceback
+                        traceback.print_exc()
                     return ['','']
 
             elif await page.querySelectorAll('.hurrytimer-cdt'):
