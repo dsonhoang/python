@@ -31,6 +31,8 @@ async def find_code(page, sorted_url, key):
                     text_value[1] = page.url
                     return text_value
             elif await page.querySelectorAll('#pcode'):
+                if key == 'admin':
+                    print("Pcode")
                 try:
                     from urllib.parse import urlparse
                     def get_domain(url):
