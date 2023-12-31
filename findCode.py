@@ -1,6 +1,7 @@
 import time
 import asyncio
 import pyppeteer
+from pyppeteer.errors import ElementHandleError
 
 async def find_code(page, sorted_url, key):
     try:
@@ -91,6 +92,10 @@ async def find_code(page, sorted_url, key):
                         text_value[0] = pcode_text.strip()
                         text_value[1] = page.url
                         return text_value
+                except ElementHandleError as e:
+                    if key == 'admin':
+                        print("ElementHandleError")
+                        return ['','']
                 except Exception as e:
                     if key == 'admin':
                         print("Exception at find_code ", e)
