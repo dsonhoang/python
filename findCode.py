@@ -55,16 +55,8 @@ async def find_pcode(page, sorted_url, key):
             """
 
             ans = await page.evaluate(js_code2)
-            import json
-            # Replace single quotes with double quotes to make it a valid JSON string
-            json_string = ans.replace("'", "\"")
-            
-            # Convert the string to a JSON object
-            json_data = json.loads(json_string)
-            
-            # Check if 'pcode' is present in the JSON object
-            if 'pcode' in json_data:
-                result = json_data['pcode']
+            if 'pcode' in ans:
+                result = ans['pcode']
                 return [result, page.url]
             else:
                 return ['','']
