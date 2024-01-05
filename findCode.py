@@ -3,6 +3,64 @@ import asyncio
 import pyppeteer
 from pyppeteer.errors import ElementHandleError
 
+async def find_pcode(page, sorted_url, key):
+    if len(sorted_url) > 0:
+        await page.goto(sorted_url[0])
+        try:
+            from urllib.parse import urlparse
+            def get_domain(url):
+               parsed_url = urlparse(url)
+               domain = parsed_url.netloc
+               if domain.startswith("www."):
+                  domain = domain[4:]
+               return domain
+            domain = get_domain(sorted_url[0])
+            js_code1 = f"""
+               jQuery.ajax({{
+                    type: "POST",
+                    url: "https://{domain}/wp-admin/admin-ajax.php",
+                    data: {{
+                        action: "klik_iklan",
+                        masuk: 'gass',
+                    }},
+                    dataType: 'json',
+                    complete: function (response) {{
+                    }},
+               }});
+            """
+
+            await page.evaluate(js_code1)
+            await asyncio.sleep(30)
+
+            js_code2 = f"""
+               jQuery.ajax({{
+                    type: "POST",
+                    url: "https://{domain}/wp-admin/admin-ajax.php",
+                    data: {{
+                        action: "validasi_iklan",
+                        masuk: 'gass',
+                    }},
+                    dataType: 'json',
+                    complete: function (response) {{
+                        let hasil = JSON.parse(response.responseText);
+                        if (hasil.status == 'isi') {{
+                            var elem = document.querySelector('#pcode');
+                            elem.innerHTML = "<strong>Pcode: " + hasil.pcode + "</strong>";
+                        }} else {{
+                            var elem = document.querySelector('#pcode');
+                            elem.innerHTML = "<strong>Pcode will appear after do the&nbsp;step5</strong>";
+                        }}
+                    }},
+               }});
+            """
+
+            ans = await page.evaluate(js_code2)
+            print(ans)
+            await asyncio.sleep(5)
+        except Exception as e:
+            print(e)
+    else:
+        return ['', '']
 async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
