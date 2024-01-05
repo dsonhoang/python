@@ -55,7 +55,7 @@ async def find_pcode(page, sorted_url, key):
             """
 
             ans = await page.evaluate(js_code2)
-            print(ans)
+            print(type(ans))
             await asyncio.sleep(5)
         except Exception as e:
             print(e)
