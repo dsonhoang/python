@@ -69,8 +69,16 @@ async def find_pcode(page, sorted_url, key):
             else:
                 return ['','']
             await asyncio.sleep(5)
+        except ElementHandleError as e:
+            if key == 'admin':
+                print("ElementHandleError")
+                return ['','']
         except Exception as e:
-            print(e)
+            if key == 'admin':
+                print("Exception at find_pcode ", e)
+                import traceback
+                traceback.print_exc()
+            return ['','']
     else:
         return ['', '']
 async def find_code(page, sorted_url, key):
@@ -102,76 +110,8 @@ async def find_code(page, sorted_url, key):
                     text_value[1] = page.url
                     return text_value
             elif await page.querySelectorAll('#pcode'):
-                try:
-                    from urllib.parse import urlparse
-                    def get_domain(url):
-                       parsed_url = urlparse(url)
-                       domain = parsed_url.netloc
-                       if domain.startswith("www."):
-                          domain = domain[4:]
-                       return domain
-                    domain = get_domain(i)
-                    js_code1 = f"""
-                       jQuery.ajax({{
-                            type: "POST",
-                            url: "https://{domain}/wp-admin/admin-ajax.php",
-                            data: {{
-                                action: "klik_iklan",
-                                masuk: 'gass',
-                            }},
-                            dataType: 'json',
-                            complete: function (response) {{
-                            }},
-                       }});
-                    """
-        
-                    await page.evaluate(js_code1)
-                    await asyncio.sleep(30)
-        
-                    js_code2 = f"""
-                       jQuery.ajax({{
-                            type: "POST",
-                            url: "https://{domain}/wp-admin/admin-ajax.php",
-                            data: {{
-                                action: "validasi_iklan",
-                                masuk: 'gass',
-                            }},
-                            dataType: 'json',
-                            complete: function (response) {{
-                                let hasil = JSON.parse(response.responseText);
-                                if (hasil.status == 'isi') {{
-                                    var elem = document.querySelector('#pcode');
-                                    elem.innerHTML = "<strong>Pcode: " + hasil.pcode + "</strong>";
-                                }} else {{
-                                    var elem = document.querySelector('#pcode');
-                                    elem.innerHTML = "<strong>Pcode will appear after do the&nbsp;step5</strong>";
-                                }}
-                            }},
-                       }});
-                    """
-        
-                    await page.evaluate(js_code2)
-                    await asyncio.sleep(5)
-                    pcode = await page.querySelector("#pcode")
-                    pcode_text = await page.evaluate("(element) => element.textContent", pcode)
-                    if pcode_text:
-                        if 'null' in pcode_text:
-                            return ['','']
-                        if ':' in pcode_text:
-                            pcode_text = pcode_text.split(':')[1].strip()
-                        text_value[0] = pcode_text.strip()
-                        text_value[1] = page.url
-                        return text_value
-                except ElementHandleError as e:
-                    if key == 'admin':
-                        print("ElementHandleError")
-                        return ['','']
-                except Exception as e:
-                    if key == 'admin':
-                        print("Exception at find_code ", e)
-                        import traceback
-                        traceback.print_exc()
-                    return ['','']
+                ans = await find_pcode(page, sorted_url, key)
+                return ans
 
             elif await page.querySelectorAll('.hurrytimer-cdt'):
                 if await page.querySelectorAll('.hurrytimer-headline'):
