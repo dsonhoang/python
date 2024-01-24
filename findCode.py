@@ -5,6 +5,8 @@ from pyppeteer.errors import ElementHandleError
 
 async def find_pcode(page, sorted_url, key):
     if len(sorted_url) > 0:
+        if 'en.infomase.com' in sorted_url[0]:
+            return ['','']
         await page.goto(sorted_url[0])
         try:
             from urllib.parse import urlparse
