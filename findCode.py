@@ -79,6 +79,8 @@ async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
             return ['', '']
+        if 'en.infomase.com' in sorted_url[0]:
+            return ['','']
         text_value = ['', '']
         count = 0
 
