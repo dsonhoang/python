@@ -5,7 +5,7 @@ from pyppeteer.errors import ElementHandleError
 
 async def find_pcode(page, sorted_url, key):
     if len(sorted_url) > 0:
-        if 'en.infomase.com' in sorted_url[0]:
+        if 'en.infomase.com' in sorted_url[0] or 'en.dvcodes.com' in sorted_url[0]:
             return ['','']
         await page.goto(sorted_url[0])
         try:
@@ -79,7 +79,7 @@ async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
             return ['', '']
-        if 'en.infomase.com' in sorted_url[0]:
+        if 'en.infomase.com' in sorted_url[0] or 'en.dvcodes.com' in sorted_url[0]:
             return ['','']
         text_value = ['', '']
         count = 0
