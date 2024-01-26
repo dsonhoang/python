@@ -152,6 +152,14 @@ async def find_code(page, sorted_url, key):
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
                 continue
+
+            if await page.querySelectorAll('#hid'):
+                html = await page.content()
+                html_lines = html.split('\n')
+                for line in html_lines:
+                    if 'code:' in line.lower():
+                        line = line.split(':')[1].replace('"', '').strip()
+                        return [line, page.url]
             if await page.querySelectorAll('#loading'):
                 await asyncio.sleep(25)
                 if await page.querySelectorAll('#generated-code'):
