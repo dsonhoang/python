@@ -3,10 +3,68 @@ import asyncio
 import pyppeteer
 from pyppeteer.errors import ElementHandleError
 
+async def find_pcode2(page, sorted_url, key):
+    code_string = """
+         var pcodeContainer = document.getElementById("pcode-container");
+         var visitedPosts = 5
+         var xhr = new XMLHttpRequest();
+         xhr.open("POST", next_post_data.ajax_url, true);
+         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+         xhr.onload = function () {
+             if (xhr.status === 200) {
+                 try {
+                     var response = JSON.parse(xhr.responseText);
+                     console.log("Server response:", response);
+
+                     if (response.verification_success) {
+                         console.log("Verification success");
+                         pcodeContainer.style.display = "block";
+                         var pcodeText = document.createElement("p");
+                         pcodeText.style.color = "#00592a";
+                         pcodeText.style.textAlign = "center";
+                         pcodeText.style.fontWeight = "bold";
+                         pcodeText.innerHTML = "PCODE: " + response.pcode;
+                         pcodeContainer.innerHTML = "";
+                         pcodeContainer.appendChild(pcodeText);
+                         pcodeContainer.textValue
+                     } else {
+                         console.log("Verification failed");
+                     }
+                 } catch (error) {
+                     console.error("Error parsing JSON:", error);
+                 }
+             } else {
+                 console.error("Error in AJAX request. Status:", xhr.status);
+             }
+         };
+
+         xhr.onerror = function () {
+             console.error("Network error");
+         };
+
+         var data = "action=verify_visited_posts";
+         console.log("Sending data:", data);
+         xhr.send(data);
+    """
+    try:
+        await page.goto(sorted_url[0])
+        for i in range(5):
+            await page.evaluate(code_string)
+            await asyncio.sleep(2)
+    
+            pcode_container = await page.querySelector("#pcode-container")
+            pcode_text = await page.evaluate('(element) => element.textContent', pcode_container)
+            if pcode_text is not None and ':' in pcode_text:
+                pcode_text = pcode_text.split(':')[1].strip()
+                return [pcode_text, page.url]
+            else:
+                await asyncio.sleep(3)
+        return ['','']
+    except:
+        return ['','']
 async def find_pcode(page, sorted_url, key):
     if len(sorted_url) > 0:
-        if 'en.infomase.com' in sorted_url[0] or 'en.dvcodes.com' in sorted_url[0]:
-            return ['','']
         await page.goto(sorted_url[0])
         try:
             from urllib.parse import urlparse
@@ -79,8 +137,6 @@ async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
             return ['', '']
-        if 'en.infomase.com' in sorted_url[0] or 'en.dvcodes.com' in sorted_url[0]:
-            return ['','']
         text_value = ['', '']
         count = 0
 
