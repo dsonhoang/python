@@ -69,6 +69,10 @@ async def find_pcode(page, sorted_url, key):
         try:
             from urllib.parse import urlparse
             def get_domain(url):
+               if '/kuismedia.id' in url:
+                   return 'kuismedia.id/en'
+               if '/ekonomiupri.id' in url:
+                   return 'ekonomiupri.id/en'
                parsed_url = urlparse(url)
                domain = parsed_url.netloc
                if domain.startswith("www."):
