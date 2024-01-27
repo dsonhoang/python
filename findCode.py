@@ -304,6 +304,20 @@ async def find_code(page, sorted_url, key):
                 for j in page_numbers_urls:
                     await page.goto(j)
                     await asyncio.sleep(1)
+                    if await page.querySelectorAll('hurrytimer-timer'):
+                        await asyncio.sleep(25)
+                        if await page.querySelectorAll('hurrytimer-campaign-message'):
+                            timer_code = await page.querySelector('.hurrytimer-campaign-message')
+                            if timer_code:
+                                s = await page.evaluate('(element) => element.textContent', timer_code)
+                                if ':' in s:
+                                    if 'Worker' in s:
+                                        s = s.split('Worker')[1]
+                                    text_value[0] = s.split(':')[1].strip()
+                                else:
+                                    text_value[0] = s
+                                text_value[1] = page.url
+                                return text_value
                     await find_code_by_p(page, text_value)
                     if text_value[0] is not None and text_value[0] != '':
                       return text_value
