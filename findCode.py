@@ -162,10 +162,12 @@ async def find_code(page, sorted_url, key):
                 code_span = await page.querySelector('.has-base-2-color')
                 code_span_text = await page.evaluate('(element) => element.textContent', code_span)
                 code_span_text = code_span_text.strip()
+                
+                if 'code:' in code_span_text.lower():
+                    code_span_text = code_span_text.split(':')[1].strip()
+                    
                 text_value[0] = code_span_text
                 text_value[1] = page.url
-                if 'code:' in text_value[0].lower():
-                    text_value[0] = text_value[0].split(':')[0].strip()
                 return text_value
                 
             if await page.querySelectorAll('#hid'):
