@@ -146,17 +146,28 @@ async def find_code(page, sorted_url, key):
 
         num_pages = 0
         for i in reversed(sorted_url):
-        #for i in sorted_url:
             count += 1
             try:
                 if 'frankenstein' in i:
                     i = 'https://frankenstein45.com/inter/nine-guilt-free-donate-car-tips/'
+                elif 'cpstesters' in i:
+                    i = 'https://cpstesters.com/tap-counter/'
                 await page.goto(i)
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
                 continue
 
+            if await page.querySelectorAll('.has-base-2-color'):
+                code_span = await page.querySelector('.has-base-2-color')
+                code_span_text = await page.evaluate('(element) => element.textContent', code_span)
+                code_span_text = code_span_text.strip()
+                text_value[0] = code_span_text
+                text_value[1] = page.url
+                if 'code:' in text_value[0]:
+                    text_value[0] = text_value[0].split(':')[0].strip()
+                return text_value
+                
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
                 html_lines = html.split('\n')
