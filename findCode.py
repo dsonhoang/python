@@ -164,7 +164,7 @@ async def find_code(page, sorted_url, key):
                 code_span_text = code_span_text.strip()
                 text_value[0] = code_span_text
                 text_value[1] = page.url
-                if 'code:' in text_value[0]:
+                if 'code:' in text_value[0].lower():
                     text_value[0] = text_value[0].split(':')[0].strip()
                 return text_value
                 
