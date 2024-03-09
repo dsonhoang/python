@@ -246,6 +246,8 @@ async def find_code(page, sorted_url, key):
                     if 'Worker' in s:
                         s = s.split('Worker')[1]
                     text_value[0] = s.split(':')[1].strip()
+                elif '-' in s:
+                    text_value[0] = s.split('-')[1].strip()
                 else:
                     text_value[0] = s
                 text_value[1] = page.url
