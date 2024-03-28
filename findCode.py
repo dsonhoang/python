@@ -185,7 +185,7 @@ async def find_code(page, sorted_url, key):
                                 text_value[1] = page.url
                                 return text_value
                             await page.evaluate('''() => {
-                                const button = document.querySelector('.countdown-footer');
+                                const button = document.querySelector('.next-page-btn');
                                 button.click();
                             }''')
                             print("clicked")
