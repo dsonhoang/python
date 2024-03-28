@@ -169,7 +169,23 @@ async def find_code(page, sorted_url, key):
                 text_value[0] = code_span_text
                 text_value[1] = page.url
                 return text_value
-                
+
+
+            if await page.querySelectorAll('.pcode_countdown'):
+                await asyncio.sleep(25)
+                if await page.querySelectorAll('.countdown-footer'):
+                    for _ in range(10):
+                        if await page.querySelectorAll('#the_code'):
+                            the_code_element = await page.querySelector('#the_code'):
+                            the_code_value = await page.evaluate('(element) => element.value', code_element)
+                            text_value[0] = the_code_value.strip()
+                            text_value[1] = page.url
+                            return text_value
+                            
+                        countdown_footer = await page.querySelectorAll('.countdown-footer')
+                        if countdown_footer:
+                            await page.click(countdown_footer)
+                            await asyncio.sleep(30)
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
                 html_lines = html.split('\n')
