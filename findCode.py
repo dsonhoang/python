@@ -171,21 +171,24 @@ async def find_code(page, sorted_url, key):
                 return text_value
 
 
-            if await page.querySelectorAll('.pcode_countdown'):
-                await asyncio.sleep(25)
-                if await page.querySelectorAll('.countdown-footer'):
-                    for _ in range(10):
-                        if await page.querySelectorAll('#the_code'):
-                            the_code_element = await page.querySelector('#the_code')
-                            the_code_value = await page.evaluate('(element) => element.value', the_code_element)
-                            text_value[0] = the_code_value.strip()
-                            text_value[1] = page.url
-                            return text_value
-                            
-                        countdown_footer = await page.querySelectorAll('.countdown-footer')
-                        if countdown_footer:
-                            await page.click(countdown_footer)
-                            await asyncio.sleep(30)
+            if await page.querySelectorAll('.pcode_countdown-wrapper'):
+                countdown_e = await page.querySelector('.pcode_countdown')
+                display_attribute = await page.evaluate('(element) => window.getComputedStyle(element).getPropertyValue("display")', element)
+                if display_attribute:
+                    await asyncio.sleep(25)
+                    if await page.querySelectorAll('.countdown-footer'):
+                        for _ in range(10):
+                            if await page.querySelectorAll('#the_code'):
+                                the_code_element = await page.querySelector('#the_code')
+                                the_code_value = await page.evaluate('(element) => element.value', the_code_element)
+                                text_value[0] = the_code_value.strip()
+                                text_value[1] = page.url
+                                return text_value
+                                
+                            countdown_footer = await page.querySelectorAll('.countdown-footer')
+                            if countdown_footer:
+                                await page.click(countdown_footer)
+                                await asyncio.sleep(30)
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
                 html_lines = html.split('\n')
