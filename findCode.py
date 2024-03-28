@@ -174,7 +174,7 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.pcode_countdown-wrapper'):
                 countdown_e = await page.querySelector('.pcode_countdown-wrapper')
                 display_attribute = await page.evaluate('(element) => window.getComputedStyle(element).getPropertyValue("display")', countdown_e)
-                if display_attribute:
+                if display_attribute == 'flex':
                     await asyncio.sleep(25)
                     if await page.querySelectorAll('.countdown-footer'):
                         for _ in range(10):
