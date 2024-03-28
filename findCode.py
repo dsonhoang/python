@@ -185,7 +185,7 @@ async def find_code(page, sorted_url, key):
                                 text_value[1] = page.url
                                 return text_value
                                 
-                            countdown_footer = await page.querySelectorAll('.countdown-footer')
+                            countdown_footer = await page.querySelector('.countdown-footer')
                             if countdown_footer:
                                 await page.click(countdown_footer)
                                 await asyncio.sleep(30)
