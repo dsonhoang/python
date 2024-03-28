@@ -177,7 +177,7 @@ async def find_code(page, sorted_url, key):
                     for _ in range(10):
                         if await page.querySelectorAll('#the_code'):
                             the_code_element = await page.querySelector('#the_code')
-                            the_code_value = await page.evaluate('(element) => element.value', code_element)
+                            the_code_value = await page.evaluate('(element) => element.value', the_code_element)
                             text_value[0] = the_code_value.strip()
                             text_value[1] = page.url
                             return text_value
