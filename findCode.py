@@ -300,11 +300,14 @@ async def find_code(page, sorted_url, key):
                                         return text_value
                             if 'https' in text_lower:
                                 continue
-                            text_value[0] = text_lower_.split(':')[1].strip()
-                            if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
-                                text_value[0] = text_value[0][1:-1]
-                            text_value[1] = page.url
-                            return text_value
+                            if len(text_lower_) > 0:
+                                text_value[0] = text_lower_.split(':')[1].strip()
+                                if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
+                                    text_value[0] = text_value[0][1:-1]
+                                text_value[1] = page.url
+                                return text_value
+                            else:
+                                return None
             # Check various elements for specific keywords
             if await page.querySelectorAll('.post-page-numbers'):
                 page_numbers = await page.querySelectorAll('.post-page-numbers')
