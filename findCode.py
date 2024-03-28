@@ -188,7 +188,6 @@ async def find_code(page, sorted_url, key):
                                 const button = document.querySelector('.next-page-btn');
                                 button.click();
                             }''')
-                            print("clicked")
                             await asyncio.sleep(30)
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
