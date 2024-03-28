@@ -301,7 +301,10 @@ async def find_code(page, sorted_url, key):
                             if 'https' in text_lower:
                                 continue
                             if len(text_lower_) > 0:
-                                text_value[0] = text_lower_.split(':')[1].strip()
+                                if ':' in text_lower_:
+                                    text_value[0] = text_lower_.split(':')[1].strip()
+                                else:
+                                    text_value[0] = text_lower_.strip()
                                 if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
                                     text_value[0] = text_value[0][1:-1]
                                 text_value[1] = page.url
