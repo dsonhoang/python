@@ -194,7 +194,6 @@ async def find_code(page, sorted_url, key):
                                     }''')
                                     await asyncio.sleep(30)
                                 else:
-                                    print("Khong tim thay block element")
                                     return ['','']
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
