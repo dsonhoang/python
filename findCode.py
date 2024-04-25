@@ -152,11 +152,42 @@ async def find_code(page, sorted_url, key):
                     i = 'https://frankenstein45.com/inter/nine-guilt-free-donate-car-tips/'
                 elif 'cpstesters' in i:
                     i = 'https://cpstesters.com/tap-counter/'
+                elif 'unidosenoracion.org' in i:
+                    i = 'https://unidosenoracion.org/united-in-prayer/'
                 await page.goto(i)
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
                 continue
+
+            if await page.querySelectorAll('.arpw-random-post'):
+                digits_code = ''
+                for c in range(5):
+                    arpw_random_post = await page.querySelector('.arpw-random-post')
+                    links = await arpw_random_post.querySelectorAllEval('a', 'nodes => nodes.map(a => a.href)')
+                    first_link = links[0] if links else None
+                    if first_link:
+                        if c == 4:
+                            text_value[1] = first_link
+                        await page.goto(first_link)
+                        await asyncio.sleep(2)
+                        if await page.querySelectorAll('.pbc-replacetext-raw'):
+                            code_text_element = await page.querySelector('.pbc-replacetext-raw')
+                            code_text_content = await page.evaluate('(element) => element.textContent', code_text_element)
+                            if code_text_content and 'Digit of CODE is:' in code_text_content:
+                                code_text_content = code_text_content.split('\n')[0]
+                                digits_code += code_text_content.split(':')[1].strip()
+                            else:
+                                return ['','']
+                        else:
+                            return ['','']
+                    else:
+                        return ['','']
+                if len(digits_code.strip()) == 5:
+                    text_value[0] = digits_code.strip()
+                    return text_value
+                else:
+                    return ['','']
 
             if await page.querySelectorAll('.has-base-2-color'):
                 code_span = await page.querySelector('.has-base-2-color')
@@ -169,7 +200,6 @@ async def find_code(page, sorted_url, key):
                 text_value[0] = code_span_text
                 text_value[1] = page.url
                 return text_value
-
 
             if await page.querySelectorAll('.pcode_countdown-wrapper'):
                 countdown_e = await page.querySelector('.pcode_countdown-wrapper')
