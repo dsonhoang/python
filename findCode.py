@@ -160,6 +160,19 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
+            if await page.querySelector('#countdownContainer'):
+                await page.goto('view-source:'+i)
+                page_content = await page.content()
+                words = page_content.split(' ')
+                for word in words:
+                    word = word.replace("'", '').replace(';', '')
+                    if word.lower().startswith('code:'):
+                        code_text = word.split(':')[1].strip()
+                        text_value[0] = code_span_text
+                        text_value[1] = page.url
+                        return text_value
+                return ['', '']
+
             if await page.querySelectorAll('.arpw-random-post'):
                 digits_code = ''
                 for c in range(5):
