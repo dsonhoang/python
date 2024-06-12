@@ -168,7 +168,7 @@ async def find_code(page, sorted_url, key):
                     word = word.replace("'", '').replace(';', '')
                     if word.lower().startswith('code:'):
                         code_text = word.split(':')[1].strip()
-                        text_value[0] = code_span_text
+                        text_value[0] = code_text
                         text_value[1] = page.url
                         return text_value
                 return ['', '']
