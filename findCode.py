@@ -170,7 +170,7 @@ async def find_code(page, sorted_url, key):
                     sub_string = page_content[index:]
         
                     first_index = sub_string.find("'")
-                    second_index = sub_string.find("'", first_space_index + 5)
+                    second_index = sub_string.find("'", first_index + 5)
         
                     # Extract the desired text between the two spaces
                     code_text = sub_string[first_index + 1:second_index].split(':')[1].strip()
