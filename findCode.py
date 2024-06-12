@@ -162,7 +162,6 @@ async def find_code(page, sorted_url, key):
 
             if await page.querySelector('#countdownContainer'):
                 try:
-                    print(2)
                     await page.goto('view-source:'+i)
                     await asyncio.sleep(2)
                     page_content = await page.content()
@@ -178,8 +177,7 @@ async def find_code(page, sorted_url, key):
                     text_value[0] = code_text
                     text_value[1] = page.url
                     return text_value
-                except Exception as e:
-                    print(e)
+                except:
                     return ['', '']
 
             if await page.querySelectorAll('.arpw-random-post'):
