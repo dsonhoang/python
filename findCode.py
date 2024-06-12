@@ -163,7 +163,7 @@ async def find_code(page, sorted_url, key):
             if await page.querySelector('#countdownContainer'):
                 try:
                     print(1)
-                    await page.goto('view-source:'+post_urls[0])
+                    await page.goto('view-source:'+i)
                     await asyncio.sleep(2)
                     page_content = await page.content()
                     index = page_content.find('codeElement.textContent')
