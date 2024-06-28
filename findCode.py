@@ -165,12 +165,21 @@ async def find_code(page, sorted_url, key):
                     await page.goto('view-source:'+i)
                     await asyncio.sleep(2)
                     page_content = await page.content()
-                    index = page_content.find('codeElement.textContent')
+                    if 'codeElement.textContent' in page_content:
+                        index = page_content.find('codeElement.textContent')
+                        sub_string = page_content[index:]
         
-                    sub_string = page_content[index:]
-        
-                    first_index = sub_string.find("'")
-                    second_index = sub_string.find("'", first_index + 5)
+                        first_index = sub_string.find("'")
+                        second_index = sub_string.find("'", first_index + 5)
+                    elif 'special code:' in page_content:
+                        index = page_content.find('special code')
+                        sub_string = page_content[index:]
+            
+                        first_index = sub_string.find(":")
+                        second_index = sub_string.find("<", first_index + 5)
+                    else:
+                        return ['','']
+                    
         
                     # Extract the desired text between the two spaces
                     code_text = sub_string[first_index + 1:second_index].split(':')[1].strip()
