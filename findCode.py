@@ -329,7 +329,7 @@ async def find_code(page, sorted_url, key):
             timer_code = await page.querySelector('.hurrytimer-campaign-message')
             if timer_code:
                 s = await page.evaluate('(element) => element.textContent', timer_code)
-                print(s)
+                
                 if 'next post' in s.lower():
                     continue
                 if ':' in s:
