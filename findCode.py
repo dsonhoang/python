@@ -339,7 +339,7 @@ async def find_code(page, sorted_url, key):
                 elif '-' in s:
                     text_value[0] = s.split('-')[1].strip()
                 else:
-                    text_value[0] = s
+                    text_value[0] = s.split('\n')[-1]
                 text_value[1] = page.url
                 return text_value
             kode_element = await page.querySelector('#kode')
