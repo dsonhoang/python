@@ -160,6 +160,24 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
+            if await page.querySelector('.show_code'):
+                try:
+                    page_content = await page.content()
+                    if 'key_code = ' in page_content:
+                        first_index = page_content.index('key_code = ') + len('key_code = ')
+                        second_index = page_content.index(';', first_index)
+                        code_text = page_content[first_index:second_index].replace('"', '').strip()
+                        if len(code_text) < 15:
+                            text_value[0] = code_text
+                            text_value[1] = page.url
+                            return text_value
+                        else:
+                          return ['', '']  
+                    else:
+                        return ['', '']
+                except:
+                    return ['', '']
+
             if await page.querySelector('#countdownContainer'):
                 try:
                     await page.goto('view-source:'+i)
