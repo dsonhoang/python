@@ -384,6 +384,15 @@ async def find_code(page, sorted_url, key):
                 return text_value
 
             async def find_code_by_p(page, text_value):
+                if 'evolva.site' in page.url or 'baelax.site' in page.url:
+                    b_tags = await page.querySelectorAll('b')
+                    for b_element in b_tags[::-1]:
+                        b_text = await page.evaluate('(element) => element.textContent', b_element)
+                        if len(b_text) == 5:
+                            text_value[0] = b_text
+                            text_value[1] = page.url
+
+                            return
                 p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
                 if p_tags:
                     for p_element in p_tags[::-1]:
