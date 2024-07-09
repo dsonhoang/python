@@ -384,7 +384,7 @@ async def find_code(page, sorted_url, key):
                 return text_value
 
             async def find_code_by_p(page, text_value):
-                if 'evolva.site' in page.url or 'baelax.site' in page.url:
+                if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url:
                     b_tags = await page.querySelectorAll('b')
                     for b_element in b_tags[::-1]:
                         b_text = await page.evaluate('(element) => element.textContent', b_element)
