@@ -388,7 +388,7 @@ async def find_code(page, sorted_url, key):
                     b_tags = await page.querySelectorAll('b')
                     for b_element in b_tags[::-1]:
                         b_text = await page.evaluate('(element) => element.textContent', b_element)
-                        if len(b_text) == 5:
+                        if len(b_text) == 5 and b_text[0] == 'A':
                             text_value[0] = b_text
                             text_value[1] = page.url
 
