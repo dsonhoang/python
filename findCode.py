@@ -180,7 +180,10 @@ async def find_code(page, sorted_url, key):
 
             if await page.querySelector('#countdownContainer'):
                 try:
-                    await page.goto('view-source:'+i)
+                    if 'sofnall' in i:
+                        await page.goto('https://sofnall.com/wp-content/litespeed/js/028bfa28a52a69615e2b0739dff3203b.js?ver=b707f')
+                    else:
+                        await page.goto('view-source:'+i)
                     await asyncio.sleep(2)
                     page_content = await page.content()
                     if 'special code:' in page_content:
