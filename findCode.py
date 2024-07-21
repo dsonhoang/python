@@ -358,18 +358,19 @@ async def find_code(page, sorted_url, key):
                         await asyncio.sleep(2)
                         if await page.querySelectorAll('srd'):
                             break
-                if await page.querySelectorAll('srd'):
+                '''if await page.querySelectorAll('srd'):
                     import requests
                     from bs4 import BeautifulSoup
+                    page_url = page.url
                     
-                    response = requests.get(page.url)
+                    response = requests.get(page_url)
                     if response.status_code == 200:
                         soup = BeautifulSoup(response.content, 'html.parser')
                         element = soup.find(id='download')
                         
                         if element:
                             element_text = element.get_text().strip()
-                            return [element_text, page.url]
+                            return [element_text, page_url]'''
                 else:
                     return ['', '']
 
