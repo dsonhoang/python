@@ -166,17 +166,22 @@ async def find_code(page, sorted_url, key):
             }''')
 
             if next_href:
+                print(1)
                 for _ in range(5):
                     next_href = = await page.evaluate('''() => {
                         const link = document.querySelector('a[target="_blank"][rel="noopener"]');
                         return link ? link.href : null;
                     }''')
                     if next_href:
+                        print(2)
                         await page.goto(next_href)
                         await asyncio.sleep(2)
                         if await page.querySelectorAll('srd'):
                             break
+                    else:
+                        break
                 if await page.querySelectorAll('srd'):
+                    print(3)
                     import requests
                     from bs4 import BeautifulSoup
                     page_url = page.url
