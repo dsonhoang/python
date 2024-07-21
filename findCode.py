@@ -160,6 +160,38 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
+            next_href = = await page.evaluate('''() => {
+                const link = document.querySelector('a[target="_blank"][rel="noopener"]');
+                return link ? link.href : null;
+            }''')
+
+            if next_href:
+                for _ in range(5):
+                    next_href = = await page.evaluate('''() => {
+                        const link = document.querySelector('a[target="_blank"][rel="noopener"]');
+                        return link ? link.href : null;
+                    }''')
+                    if next_href:
+                        await page.goto(next_href)
+                        await asyncio.sleep(2)
+                        if await page.querySelectorAll('srd'):
+                            break
+                if await page.querySelectorAll('srd'):
+                    import requests
+                    from bs4 import BeautifulSoup
+                    page_url = page.url
+                    
+                    response = requests.get(page_url)
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.content, 'html.parser')
+                        element = soup.find(id='download')
+                        
+                        if element:
+                            element_text = element.get_text().strip()
+                            return [element_text, page_url]
+                else:
+                    return ['', '']
+
             if await page.querySelector('.show_code'):
                 try:
                     page_content = await page.content()
