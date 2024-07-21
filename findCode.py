@@ -174,15 +174,14 @@ async def find_code(page, sorted_url, key):
                     if next_href:
                         await page.goto(next_href)
                         await asyncio.sleep(2)
-                        if await page.querySelectorAll('srd'):
+                        if await page.querySelectorAll('.srd'):
                             break
                     else:
                         break
-                if await page.querySelectorAll('srd'):
+                if await page.querySelectorAll('.srd'):
                     import requests
                     from bs4 import BeautifulSoup
                     page_url = page.url
-                    print(page_url)
                     
                     response = requests.get(page_url)
                     if response.status_code == 200:
@@ -190,13 +189,8 @@ async def find_code(page, sorted_url, key):
                         element = soup.find(id='download')
                         
                         if element:
-                            print(1)
                             element_text = element.get_text().strip()
                             return [element_text, page_url]
-                        else:
-                            print(0)
-                    else:
-                        print(-1)
                 else:
                     return ['', '']
 
