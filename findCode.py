@@ -160,7 +160,7 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
-            next_href = await page.evaluate(() => {
+            next_href = await page.evaluate('''() => {
                 const links = document.querySelectorAll('a[target="_blank"]');
             
                 for (let i = 0; i < links.length; i++) {
@@ -178,11 +178,11 @@ async def find_code(page, sorted_url, key):
                 }
                 
                 return null; // Return null if no matching link is found
-            });
+            }''')
 
             if next_href:
                 for _ in range(5):
-                    next_href = await page.evaluate(() => {
+                    next_href = await page.evaluate('''() => {
                         const links = document.querySelectorAll('a[target="_blank"]');
                     
                         for (let i = 0; i < links.length; i++) {
@@ -200,7 +200,7 @@ async def find_code(page, sorted_url, key):
                         }
                         
                         return null; // Return null if no matching link is found
-                    });
+                    }''')
                     if next_href:
                         await page.goto(next_href)
                         await asyncio.sleep(2)
