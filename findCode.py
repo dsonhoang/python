@@ -160,14 +160,14 @@ async def find_code(page, sorted_url, key):
             except:
                 continue
 
-            next_href = = await page.evaluate('''() => {
+            next_href = await page.evaluate('''() => {
                 const link = document.querySelector('a[target="_blank"][rel="noopener"]');
                 return link ? link.href : null;
             }''')
 
             if next_href:
                 for _ in range(5):
-                    next_href = = await page.evaluate('''() => {
+                    next_href = await page.evaluate('''() => {
                         const link = document.querySelector('a[target="_blank"][rel="noopener"]');
                         return link ? link.href : null;
                     }''')
