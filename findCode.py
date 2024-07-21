@@ -148,10 +148,6 @@ async def find_code(page, sorted_url, key):
         for i in reversed(sorted_url):
             count += 1
             try:
-                if 'frankenstein' in i:
-                    i = 'https://frankenstein45.com/inter/nine-guilt-free-donate-car-tips/'
-                elif 'cpstesters' in i:
-                    i = 'https://cpstesters.com/tap-counter/'
                 elif 'unidosenoracion.org' in i:
                     i = 'https://unidosenoracion.org/united-in-prayer/'
                 await page.goto(i)
@@ -307,43 +303,6 @@ async def find_code(page, sorted_url, key):
                 else:
                     await asyncio.sleep(30)
                     
-            elif await page.querySelectorAll('.detail_lagi'):
-                current_page_num = await page.evaluate('(element) => element.textContent', await page.querySelector('.info_page'))
-                try:
-                    current_page_num = int(current_page_num.strip())
-                except:
-                    current_page_num = 0
-
-                if current_page_num > num_pages:
-                    num_pages = current_page_num
-                    
-                if count > num_pages + 2:
-                    return ['', '']
-                try:
-                    time_wait = await page.querySelector('.info_detik')
-                    time_wait = await page.evaluate('(element) => element.textContent', time_wait)
-                    time_wait = int(time_wait.strip())
-                except:
-                    time_wait = None
-                if time_wait:
-                    await asyncio.sleep(time_wait + 3)
-                else:
-                    await asyncio.sleep(30)
-                if num_pages - count <= 1:
-                    await asyncio.sleep(12)
-                
-                code_block = await page.querySelectorAll('.detail_lagi')
-                code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
-                code_block_text = code_block_text.strip()
-                if len(code_block_text.split(':')[1].strip()) > 5:
-                    s = code_block_text.split(':')[1].strip()
-                    if ':' in s:
-                        text_value[0] = s.split(':')[1].strip()
-                    else:
-                        text_value[0] = s
-                    text_value[1] = page.url
-
-                    return text_value
             timer_code = await page.querySelector('.hurrytimer-campaign-message')
             if timer_code:
                 s = await page.evaluate('(element) => element.textContent', timer_code)
@@ -382,6 +341,37 @@ async def find_code(page, sorted_url, key):
                     text_value[0] = text_code.strip()
                 text_value[1] = page.url
                 return text_value
+
+            next_href = = await page.evaluate('''() => {
+                const link = document.querySelector('a[target="_blank"][rel="noopener"]');
+                return link ? link.href : null;
+            }''')
+
+            if next_href:
+                for _ in range(5):
+                    next_href = = await page.evaluate('''() => {
+                        const link = document.querySelector('a[target="_blank"][rel="noopener"]');
+                        return link ? link.href : null;
+                    }''')
+                    if next_href:
+                        await page.goto(next_href)
+                        await asyncio.sleep(2)
+                        if await page.querySelectorAll('srd'):
+                            break
+                if await page.querySelectorAll('srd'):
+                    import requests
+                    from bs4 import BeautifulSoup
+                    
+                    response = requests.get(page.url)
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.content, 'html.parser')
+                        element = soup.find(id='download')
+                        
+                        if element:
+                            element_text = element.get_text().strip()
+                            return [element_text, page.url]
+                else:
+                    return ['', '']
 
             async def find_code_by_p(page, text_value):
                 if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url:
