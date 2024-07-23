@@ -43,20 +43,17 @@ async def find_code(page, sorted_url, key):
             }''')
 
             if next_href:
-                for _ in range(5):
+                for _ in range(6):
                     next_href = await page.evaluate('''() => {
                         const links = document.querySelectorAll('a[target="_blank"]');
                     
                         for (let i = 0; i < links.length; i++) {
                             const link = links[i];
                             
-                            // Check if the link has 'rel' attribute equal to 'noopener'
-                            if (link.getAttribute('rel') === 'noopener') {
-                                return link.href;
-                            }
-                            
                             // Check if the link contains the text 'NEXT'
-                            if (link.textContent.includes('NEXT')) {
+                            if (link.textContent.includes('NEXT') || 
+                                link.textContent.includes('N E X T') ||
+                                link.textContent.includes('>')) {
                                 return link.href;
                             }
                         }
@@ -83,8 +80,6 @@ async def find_code(page, sorted_url, key):
                         if element:
                             element_text = element.get_text().strip()
                             return [element_text, page_url]
-                else:
-                    return ['', '']
 
             if await page.querySelector('.show_code'):
                 try:
@@ -256,36 +251,6 @@ async def find_code(page, sorted_url, key):
                 text_value[1] = page.url
                 return text_value
 
-            async def find_code_by_p(page, text_value):
-                if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url:
-                    b_tags = await page.querySelectorAll('b')
-                    for b_element in b_tags[::-1]:
-                        b_text = await page.evaluate('(element) => element.textContent', b_element)
-                        if len(b_text) == 5 and b_text[0] == 'A':
-                            text_value[0] = b_text
-                            text_value[1] = page.url
-
-                            return
-                p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
-                if p_tags:
-                    for p_element in p_tags[::-1]:
-                        text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
-                        text_lower = text_lower_.lower()
-                        if 'prnt' in text_lower or 'manual' in text_lower or 'https' in text_lower:
-                            continue
-                        if (any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55) or ('for proof' in text_lower):
-                            if len(text_lower_) > 0:
-                                if ':' in text_lower_:
-                                    text_value[0] = text_lower_.split(':')[1].strip()
-                                else:
-                                    text_value[0] = text_lower_.strip()
-                                if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
-                                    text_value[0] = text_value[0][1:-1]
-                                text_value[1] = page.url
-                                return
-                            else:
-                                return
-
             if await page.querySelectorAll('.post-page-numbers'):
                 page_numbers = await page.querySelectorAll('.post-page-numbers')
                 page_numbers_urls = []
@@ -317,6 +282,36 @@ async def find_code(page, sorted_url, key):
                     if text_value[0] is not None and text_value[0] != '':
                       return text_value
             
+            async def find_code_by_p(page, text_value):
+                if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url:
+                    b_tags = await page.querySelectorAll('b')
+                    for b_element in b_tags[::-1]:
+                        b_text = await page.evaluate('(element) => element.textContent', b_element)
+                        if len(b_text) == 5 and b_text[0] == 'A':
+                            text_value[0] = b_text
+                            text_value[1] = page.url
+
+                            return
+                p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
+                if p_tags:
+                    for p_element in p_tags[::-1]:
+                        text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
+                        text_lower = text_lower_.lower()
+                        if 'prnt' in text_lower or 'manual' in text_lower or 'https' in text_lower:
+                            continue
+                        if (any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55) or ('for proof' in text_lower):
+                            if len(text_lower_) > 0:
+                                if ':' in text_lower_:
+                                    text_value[0] = text_lower_.split(':')[1].strip()
+                                else:
+                                    text_value[0] = text_lower_.strip()
+                                if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
+                                    text_value[0] = text_value[0][1:-1]
+                                text_value[1] = page.url
+                                return
+                            else:
+                                return
+
             await find_code_by_p(page, text_value)
 
             if text_value[0] and len(text_value[0]) > 0:
