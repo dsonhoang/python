@@ -3,140 +3,6 @@ import asyncio
 import pyppeteer
 from pyppeteer.errors import ElementHandleError
 
-async def find_pcode2(page, sorted_url, key):
-    code_string = """
-         var pcodeContainer = document.getElementById("pcode-container");
-         var visitedPosts = 5
-         var xhr = new XMLHttpRequest();
-         xhr.open("POST", next_post_data.ajax_url, true);
-         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-
-         xhr.onload = function () {
-             if (xhr.status === 200) {
-                 try {
-                     var response = JSON.parse(xhr.responseText);
-                     console.log("Server response:", response);
-
-                     if (response.verification_success) {
-                         console.log("Verification success");
-                         pcodeContainer.style.display = "block";
-                         var pcodeText = document.createElement("p");
-                         pcodeText.style.color = "#00592a";
-                         pcodeText.style.textAlign = "center";
-                         pcodeText.style.fontWeight = "bold";
-                         pcodeText.innerHTML = "PCODE: " + response.pcode;
-                         pcodeContainer.innerHTML = "";
-                         pcodeContainer.appendChild(pcodeText);
-                         pcodeContainer.textValue
-                     } else {
-                         console.log("Verification failed");
-                     }
-                 } catch (error) {
-                     console.error("Error parsing JSON:", error);
-                 }
-             } else {
-                 console.error("Error in AJAX request. Status:", xhr.status);
-             }
-         };
-
-         xhr.onerror = function () {
-             console.error("Network error");
-         };
-
-         var data = "action=verify_visited_posts";
-         console.log("Sending data:", data);
-         xhr.send(data);
-    """
-    try:
-        await page.goto(sorted_url[0])
-        for i in range(5):
-            await page.evaluate(code_string)
-            await asyncio.sleep(2)
-    
-            pcode_container = await page.querySelector("#pcode-container")
-            pcode_text = await page.evaluate('(element) => element.textContent', pcode_container)
-            if pcode_text is not None and ':' in pcode_text:
-                pcode_text = pcode_text.split(':')[1].strip()
-                return [pcode_text, page.url]
-            else:
-                await asyncio.sleep(3)
-        return ['','']
-    except:
-        return ['','']
-async def find_pcode(page, sorted_url, key):
-    if len(sorted_url) > 0:
-        await page.goto(sorted_url[0])
-        try:
-            from urllib.parse import urlparse
-            def get_domain(url):
-               if '/kuismedia.id' in url:
-                   return 'kuismedia.id/en'
-               if '/ekonomiupri.id' in url:
-                   return 'ekonomiupri.id/en'
-               parsed_url = urlparse(url)
-               domain = parsed_url.netloc
-               if domain.startswith("www."):
-                  domain = domain[4:]
-               return domain
-            domain = get_domain(sorted_url[0])
-            js_code1 = f"""
-               jQuery.ajax({{
-                    type: "POST",
-                    url: "https://{domain}/wp-admin/admin-ajax.php",
-                    data: {{
-                        action: "klik_iklan",
-                        masuk: 'gass',
-                    }},
-                    dataType: 'json',
-                    complete: function (response) {{
-                    }},
-               }});
-            """
-
-            await page.evaluate(js_code1)
-            await asyncio.sleep(30)
-
-            js_code2 = f"""
-               jQuery.ajax({{
-                    type: "POST",
-                    url: "https://{domain}/wp-admin/admin-ajax.php",
-                    data: {{
-                        action: "validasi_iklan",
-                        masuk: 'gass',
-                    }},
-                    dataType: 'json',
-                    complete: function (response) {{
-                        let hasil = JSON.parse(response.responseText);
-                        if (hasil.status == 'isi') {{
-                            var elem = document.querySelector('#pcode');
-                            elem.innerHTML = "<strong>Pcode: " + hasil.pcode + "</strong>";
-                        }} else {{
-                            var elem = document.querySelector('#pcode');
-                            elem.innerHTML = "<strong>Pcode will appear after do the&nbsp;step5</strong>";
-                        }}
-                    }},
-               }});
-            """
-
-            ans = await page.evaluate(js_code2)
-            if 'pcode' in ans:
-                result = ans['pcode']
-                return [result, page.url]
-            else:
-                return ['','']
-            await asyncio.sleep(5)
-        except ElementHandleError as e:
-            if key == 'admin':
-                print("ElementHandleError")
-                return ['','']
-        except Exception as e:
-            if key == 'admin':
-                print("Exception at find_pcode ", e)
-                import traceback
-                traceback.print_exc()
-            return ['','']
-    else:
-        return ['', '']
 async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
@@ -148,11 +14,7 @@ async def find_code(page, sorted_url, key):
         for i in reversed(sorted_url):
             count += 1
             try:
-                if 'frankenstein' in i:
-                    i = 'https://frankenstein45.com/inter/nine-guilt-free-donate-car-tips/'
-                elif 'cpstesters' in i:
-                    i = 'https://cpstesters.com/tap-counter/'
-                elif 'unidosenoracion.org' in i:
+                if 'unidosenoracion.org' in i:
                     i = 'https://unidosenoracion.org/united-in-prayer/'
                 await page.goto(i)
                 await asyncio.sleep(1)
@@ -235,12 +97,9 @@ async def find_code(page, sorted_url, key):
                             text_value[0] = code_text
                             text_value[1] = page.url
                             return text_value
-                        else:
-                          return ['', '']  
-                    else:
-                        return ['', '']
                 except:
                     return ['', '']
+                return ['', '']
 
             if await page.querySelector('#countdownContainer'):
                 try:
@@ -303,18 +162,6 @@ async def find_code(page, sorted_url, key):
                 else:
                     return ['','']
 
-            if await page.querySelectorAll('.has-base-2-color'):
-                code_span = await page.querySelector('.has-base-2-color')
-                code_span_text = await page.evaluate('(element) => element.textContent', code_span)
-                code_span_text = code_span_text.strip()
-                
-                if 'code:' in code_span_text.lower():
-                    code_span_text = code_span_text.split(':')[1].strip()
-                    
-                text_value[0] = code_span_text
-                text_value[1] = page.url
-                return text_value
-
             if await page.querySelectorAll('.pcode_countdown-wrapper'):
                 countdown_e = await page.querySelector('.pcode_countdown-wrapper')
                 display_attribute = await page.evaluate('(element) => window.getComputedStyle(element).getPropertyValue("display")', countdown_e)
@@ -339,6 +186,7 @@ async def find_code(page, sorted_url, key):
                                     await asyncio.sleep(30)
                                 else:
                                     return ['','']
+            
             if await page.querySelectorAll('#hid'):
                 html = await page.content()
                 html_lines = html.split('\n')
@@ -346,6 +194,7 @@ async def find_code(page, sorted_url, key):
                     if 'code:' in line.lower():
                         line = line.split(':')[1].replace('"', '').strip()
                         return [line, page.url]
+            
             if await page.querySelectorAll('#loading'):
                 await asyncio.sleep(25)
                 if await page.querySelectorAll('#generated-code'):
@@ -355,9 +204,6 @@ async def find_code(page, sorted_url, key):
                     text_value[0] = code_span_text
                     text_value[1] = page.url
                     return text_value
-            elif await page.querySelectorAll('#pcode'):
-                ans = await find_pcode(page, sorted_url, key)
-                return ans
 
             elif await page.querySelectorAll('.hurrytimer-cdt'):
                 if await page.querySelectorAll('.hurrytimer-headline'):
@@ -371,43 +217,6 @@ async def find_code(page, sorted_url, key):
                 else:
                     await asyncio.sleep(30)
                     
-            elif await page.querySelectorAll('.detail_lagi'):
-                current_page_num = await page.evaluate('(element) => element.textContent', await page.querySelector('.info_page'))
-                try:
-                    current_page_num = int(current_page_num.strip())
-                except:
-                    current_page_num = 0
-
-                if current_page_num > num_pages:
-                    num_pages = current_page_num
-                    
-                if count > num_pages + 2:
-                    return ['', '']
-                try:
-                    time_wait = await page.querySelector('.info_detik')
-                    time_wait = await page.evaluate('(element) => element.textContent', time_wait)
-                    time_wait = int(time_wait.strip())
-                except:
-                    time_wait = None
-                if time_wait:
-                    await asyncio.sleep(time_wait + 3)
-                else:
-                    await asyncio.sleep(30)
-                if num_pages - count <= 1:
-                    await asyncio.sleep(12)
-                
-                code_block = await page.querySelectorAll('.detail_lagi')
-                code_block_text = await page.evaluate('(element) => element.textContent', code_block[2])
-                code_block_text = code_block_text.strip()
-                if len(code_block_text.split(':')[1].strip()) > 5:
-                    s = code_block_text.split(':')[1].strip()
-                    if ':' in s:
-                        text_value[0] = s.split(':')[1].strip()
-                    else:
-                        text_value[0] = s
-                    text_value[1] = page.url
-
-                    return text_value
             timer_code = await page.querySelector('.hurrytimer-campaign-message')
             if timer_code:
                 s = await page.evaluate('(element) => element.textContent', timer_code)
@@ -424,6 +233,7 @@ async def find_code(page, sorted_url, key):
                     text_value[0] = s.split('\n')[-1]
                 text_value[1] = page.url
                 return text_value
+            
             kode_element = await page.querySelector('#kode')
             if kode_element:
                 s = await page.evaluate('(element) => element.textContent', kode_element)
@@ -435,7 +245,6 @@ async def find_code(page, sorted_url, key):
                 text_value[1] = page.url
                 return text_value
 
-            # Check if elements with class 'has-text-align-center' are present
             center_elements = await page.querySelectorAll('.has-text-align-center')
             if center_elements:
                 text_code = await page.evaluate('(element) => element.textContent', center_elements[-1])
@@ -473,10 +282,10 @@ async def find_code(page, sorted_url, key):
                                 if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
                                     text_value[0] = text_value[0][1:-1]
                                 text_value[1] = page.url
-                                return text_value
+                                return
                             else:
-                                return None
-            # Check various elements for specific keywords
+                                return
+
             if await page.querySelectorAll('.post-page-numbers'):
                 page_numbers = await page.querySelectorAll('.post-page-numbers')
                 page_numbers_urls = []
@@ -507,10 +316,11 @@ async def find_code(page, sorted_url, key):
                     await find_code_by_p(page, text_value)
                     if text_value[0] is not None and text_value[0] != '':
                       return text_value
-            else:
-                await find_code_by_p(page, text_value)
-                if text_value[0] is not None and text_value[0] != '':
-                    return text_value
+            
+            await find_code_by_p(page, text_value)
+
+            if text_value[0] and len(text_value[0]) > 0:
+                return text_value
                 
         return text_value
     except Exception as e:
