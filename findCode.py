@@ -16,6 +16,8 @@ async def find_code(page, sorted_url, key):
             try:
                 if 'unidosenoracion.org' in i:
                     i = 'https://unidosenoracion.org/united-in-prayer/'
+                elif 'home.infolensa.com' in i:
+                    i = 'https://www.home.infolensa.com/model-homes-for-sale-lake-elmo-mn/'
                 await page.goto(i)
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
