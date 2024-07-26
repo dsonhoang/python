@@ -82,8 +82,33 @@ async def find_code(page, sorted_url, key):
                         if element:
                             element_text = element.get_text().strip()
                             return [element_text, page_url]
+            if await page.querySelectorAll('.detail_lagi'):
+                try:
+                    await page.goto('view-source:'+i)
+                    await asyncio.sleep(2)
 
-            if await page.querySelector('.show_code'):
+                    page_content = await page.content()
+                    if 'const code =' in page_content:
+                        index = page_content.find('const code =')
+                        sub_string = page_content[index:]
+            
+                        first_index = sub_string.find("'")
+                        second_index = sub_string.find("'", first_index + 5)
+                    else:
+                        return ['','']
+        
+                    # Extract the desired text between the two spaces
+                    code_text = sub_string[first_index + 1:second_index]
+                    if ':' in code_text:
+                        code_text = code_text.split(':')[1].strip().replace('&lt', '')
+                    else:
+                        code_text = code_text.strip().replace('&lt', '')
+                    text_value[0] = code_text
+                    text_value[1] = page.url
+                    return text_value
+                except:
+                    return ['', '']
+            if await page.querySelectorAll('.show_code'):
                 try:
                     page_content = await page.content()
                     if 'key_code = ' in page_content:
