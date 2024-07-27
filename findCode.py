@@ -87,7 +87,7 @@ async def find_code(page, sorted_url, key):
             if await page.querySelectorAll('.border-white'):
                 try:
                     code_text = ''
-                    random_urls = random.sample(sorted_urls, 3)
+                    random_urls = random.sample(sorted_url, 3)
                     for url in random_urls:
                         response = requests.get(url, timeout=10)
                     
