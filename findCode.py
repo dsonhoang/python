@@ -237,8 +237,8 @@ async def find_code(page, sorted_url, key):
                                     return ['','']
             
             if await page.querySelectorAll('#hid'):
-                html = await page.content()
-                html_lines = html.split('\n')
+                html_content = await page.content()
+                html_lines = html_content.split('\n')
                 for line in html_lines:
                     if 'code:' in line.lower():
                         line = line.split(':')[1].replace('"', '').strip()
