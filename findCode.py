@@ -5,11 +5,12 @@ from pyppeteer.errors import ElementHandleError
 import requests
 from bs4 import BeautifulSoup
 import random
+import html
 
-async def find_code(page, sorted_url, 
+async def find_code(page, sorted_url, key):
     try:
         if len(sorted_url) == 0:
-            return 
+            return ['', '']
         text_value = ['', '']
         count = 0
 
@@ -110,77 +111,65 @@ async def find_code(page, sorted_url,
                     return ['', '']
             
             if await page.querySelectorAll('.detail_lagi'):
-                try:
-                    await page.goto('view-source:'+i)
-                    await asyncio.sleep(2)
+                await page.goto('view-source:'+i)
+                await asyncio.sleep(2)
 
-                    page_content = await page.content()
-                    if 'const code =' in page_content:
-                        index = page_content.find('const code =')
-                        sub_string = page_content[index:]
-            
-                        first_index = sub_string.find("'")
-                        second_index = sub_string.find("'", first_index + 5)
-                    else:
-                        return ['','']
+                page_content = await page.content()
+                page_content = html.unescape(page_content)
+
+                if 'const code =' in page_content:
+                    index = page_content.find('const code =')
+                    sub_string = page_content[index:]
         
-                    # Extract the desired text between the two spaces
+                    first_index = sub_string.find("'")
+                    second_index = sub_string.find("'", first_index + 5)
                     code_text = sub_string[first_index + 1:second_index]
-                    if ':' in code_text:
-                        code_text = code_text.split(':')[1].strip().replace('&lt', '')
-                    else:
-                        code_text = code_text.strip().replace('&lt', '')
                     text_value[0] = code_text
                     text_value[1] = page.url
                     return text_value
-                except:
-                    return ['', '']
+                else:
+                    return ['','']
             if await page.querySelectorAll('.show_code'):
-                try:
-                    page_content = await page.content()
-                    if 'key_code = ' in page_content:
-                        first_index = page_content.index('key_code = ') + len('key_code = ')
-                        second_index = page_content.index(';', first_index)
-                        code_text = page_content[first_index:second_index].replace('"', '').strip()
-                        if len(code_text) < 15:
-                            text_value[0] = code_text
-                            text_value[1] = page.url
-                            return text_value
-                except:
-                    return ['', '']
+                page_content = await page.content()
+
+                if 'key_code = ' in page_content:
+                    first_index = page_content.index('key_code = ') + len('key_code = ')
+                    second_index = page_content.index(';', first_index)
+                    code_text = page_content[first_index:second_index].replace('"', '').strip()
+                    if len(code_text) < 15:
+                        text_value[0] = code_text
+                        text_value[1] = page.url
+                        return text_value
                 return ['', '']
 
             if await page.querySelector('#countdownContainer'):
-                try:
-                    await page.goto('view-source:'+i)
-                    await asyncio.sleep(2)
-                    page_content = await page.content()
-                    if 'special code:' in page_content:
-                        index = page_content.find('special code')
-                        sub_string = page_content[index:]
-            
-                        first_index = sub_string.find(":")
-                        second_index = sub_string.find(";/p", first_index + 5)
-                    elif 'codeElement.textContent' in page_content:
-                        index = page_content.find('codeElement.textContent')
-                        sub_string = page_content[index:]
+                await page.goto('view-source:'+i)
+                await asyncio.sleep(2)
+                page_content = await page.content()
+
+                if 'special code:' in page_content:
+                    index = page_content.find('special code')
+                    sub_string = page_content[index:]
         
-                        first_index = sub_string.find("'")
-                        second_index = sub_string.find("'", first_index + 5)
-                    else:
-                        return ['','']
-        
-                    # Extract the desired text between the two spaces
-                    code_text = sub_string[first_index + 1:second_index]
-                    if ':' in code_text:
-                        code_text = code_text.split(':')[1].strip().replace('&lt', '')
-                    else:
-                        code_text = code_text.strip().replace('&lt', '')
-                    text_value[0] = code_text
-                    text_value[1] = page.url
-                    return text_value
-                except:
-                    return ['', '']
+                    first_index = sub_string.find(":")
+                    second_index = sub_string.find(";/p", first_index + 5)
+                elif 'codeElement.textContent' in page_content:
+                    index = page_content.find('codeElement.textContent')
+                    sub_string = page_content[index:]
+    
+                    first_index = sub_string.find("'")
+                    second_index = sub_string.find("'", first_index + 5)
+                else:
+                    return ['','']
+    
+                code_text = sub_string[first_index + 1:second_index]
+                if ':' in code_text:
+                    code_text = code_text.split(':')[1].strip().replace('&lt', '')
+                else:
+                    code_text = code_text.strip().replace('&lt', '')
+                text_value[0] = code_text
+                text_value[1] = page.url
+                return text_value
 
             if await page.querySelectorAll('.arpw-random-post'):
                 digits_code = ''
@@ -235,14 +224,6 @@ async def find_code(page, sorted_url,
                                     await asyncio.sleep(30)
                                 else:
                                     return ['','']
-            
-            if await page.querySelectorAll('#hid'):
-                html_content = await page.content()
-                html_lines = html_content.split('\n')
-                for line in html_lines:
-                    if 'code:' in line.lower():
-                        line = line.split(':')[1].replace('"', '').strip()
-                        return [line, page.url]
             
             if await page.querySelectorAll('#loading'):
                 await asyncio.sleep(25)
