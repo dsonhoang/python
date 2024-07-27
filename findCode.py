@@ -6,10 +6,10 @@ import requests
 from bs4 import BeautifulSoup
 import random
 
-async def find_code(page, sorted_url, key):
+async def find_code(page, sorted_url, 
     try:
         if len(sorted_url) == 0:
-            return ['', '']
+            return 
         text_value = ['', '']
         count = 0
 
