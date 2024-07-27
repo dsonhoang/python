@@ -2,6 +2,9 @@ import time
 import asyncio
 import pyppeteer
 from pyppeteer.errors import ElementHandleError
+import requests
+from bs4 import BeautifulSoup
+import random
 
 async def find_code(page, sorted_url, key):
     try:
@@ -70,11 +73,9 @@ async def find_code(page, sorted_url, key):
                     else:
                         break
                 if await page.querySelectorAll('.srd'):
-                    import requests
-                    from bs4 import BeautifulSoup
                     page_url = page.url
                     
-                    response = requests.get(page_url)
+                    response = requests.get(page_url, timeout=10)
                     if response.status_code == 200:
                         soup = BeautifulSoup(response.content, 'html.parser')
                         element = soup.find(id='download')
@@ -82,6 +83,29 @@ async def find_code(page, sorted_url, key):
                         if element:
                             element_text = element.get_text().strip()
                             return [element_text, page_url]
+
+            if await page.querySelectorAll('.border-white'):
+                try:
+                    code_text = ''
+                    random_urls = random.sample(sorted_urls, 3)
+                    for url in random_urls:
+                        response = requests.get(url, timeout=10)
+                    
+                        soup = BeautifulSoup(response.text, 'html.parser')
+                        element = soup.find(class_='border-white')
+                        
+                        if element:
+                            text = element.get_text(strip=True)
+                        code_text = code_text + text + '\n'
+
+                    code_text = code_text.strip()
+                    if len(code_text.split('\n')) == 3:
+                        return [code_text, page.url]
+                    else:
+                        return ['', '']
+                except:
+                    return ['', '']
+            
             if await page.querySelectorAll('.detail_lagi'):
                 try:
                     await page.goto('view-source:'+i)
