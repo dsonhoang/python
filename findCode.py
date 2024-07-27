@@ -49,29 +49,32 @@ async def find_code(page, sorted_url, key):
 
             if next_href:
                 for _ in range(6):
+                    await page.goto(next_href)
+                    await asyncio.sleep(2)
+
                     next_href = await page.evaluate('''() => {
                         const links = document.querySelectorAll('a[target="_blank"]');
                     
                         for (let i = 0; i < links.length; i++) {
                             const link = links[i];
                             
+                            // Check if the link has 'rel' attribute equal to 'noopener'
+                            if (link.getAttribute('rel') === 'noopener') {
+                                return link.href;
+                            }
+                            
                             // Check if the link contains the text 'NEXT'
-                            if (link.textContent.includes('NEXT') || 
-                                link.textContent.includes('N E X T') ||
-                                link.textContent.includes('>')) {
+                            if (link.textContent.includes('NEXT')) {
                                 return link.href;
                             }
                         }
                         
                         return null; // Return null if no matching link is found
                     }''')
-                    if next_href:
-                        await page.goto(next_href)
-                        await asyncio.sleep(2)
-                        if await page.querySelectorAll('.srd'):
-                            break
-                    else:
+
+                    if (await page.querySelectorAll('.srd') and not next_href) or not next_href:
                         break
+
                 if await page.querySelectorAll('.srd'):
                     page_url = page.url
                     
