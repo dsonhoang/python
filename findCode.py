@@ -22,7 +22,7 @@ async def find_code(page, sorted_url, key):
                     i = 'https://unidosenoracion.org/united-in-prayer/'
                 elif 'home.infolensa.com' in i:
                     i = 'https://www.home.infolensa.com/model-homes-for-sale-lake-elmo-mn/'
-                await page.goto(i)
+                await page.goto(i, {'timeout': 60000})
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
             except:
@@ -50,7 +50,7 @@ async def find_code(page, sorted_url, key):
 
             if next_href:
                 for _ in range(6):
-                    await page.goto(next_href)
+                    await page.goto(next_href, {'timeout': 60000})
                     await asyncio.sleep(2)
 
                     next_href = await page.evaluate('''() => {
@@ -111,7 +111,7 @@ async def find_code(page, sorted_url, key):
                     return ['', '']
             
             if await page.querySelectorAll('.detail_lagi'):
-                await page.goto('view-source:'+i)
+                await page.goto('view-source:'+i, {'timeout': 60000})
                 await asyncio.sleep(2)
 
                 page_content = await page.content()
@@ -143,7 +143,7 @@ async def find_code(page, sorted_url, key):
                 return ['', '']
 
             if await page.querySelector('#countdownContainer'):
-                await page.goto('view-source:'+i)
+                await page.goto('view-source:'+i, {'timeout': 60000})
                 await asyncio.sleep(2)
                 page_content = await page.content()
 
@@ -180,7 +180,7 @@ async def find_code(page, sorted_url, key):
                     if first_link:
                         if c == 4:
                             text_value[1] = first_link
-                        await page.goto(first_link)
+                        await page.goto(first_link, {'timeout': 60000})
                         await asyncio.sleep(2)
                         if await page.querySelectorAll('.pbc-replacetext-raw'):
                             code_text_element = await page.querySelector('.pbc-replacetext-raw')
@@ -297,7 +297,7 @@ async def find_code(page, sorted_url, key):
                         current_page_url = current_page_url + str(j+2)
                     page_numbers_urls.append(current_page_url)
                 for j in page_numbers_urls:
-                    await page.goto(j)
+                    await page.goto(j, {'timeout': 60000})
                     await asyncio.sleep(1)
                     if await page.querySelectorAll('.hurrytimer-timer'):
                         await asyncio.sleep(25)
