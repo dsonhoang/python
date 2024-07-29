@@ -125,7 +125,7 @@ async def find_code(page, sorted_url, key):
                     second_index = sub_string.find("'", first_index + 5)
                     code_text = sub_string[first_index + 1:second_index]
                     text_value[0] = code_text
-                    text_value[1] = page.url
+                    text_value[1] = i
                     return text_value
                 else:
                     return ['','']
@@ -168,7 +168,7 @@ async def find_code(page, sorted_url, key):
                 else:
                     code_text = code_text.strip().replace('&lt', '')
                 text_value[0] = code_text
-                text_value[1] = page.url
+                text_value[1] = i
                 return text_value
 
             if await page.querySelectorAll('.arpw-random-post'):
