@@ -40,7 +40,7 @@ async def find_code(page, sorted_url, key):
                     }
                     
                     // Check if the link contains the text 'NEXT'
-                    if (link.textContent.includes('NEXT')) {
+                    if (link.textContent.includes('NEXT') || link.textContent.includes('>')) {
                         return link.href;
                     }
                 }
@@ -48,7 +48,7 @@ async def find_code(page, sorted_url, key):
                 return null; // Return null if no matching link is found
             }''')
 
-            if next_href:
+            if next_href and not 'clashranger' in i:
                 for _ in range(6):
                     await page.goto(next_href, {'timeout': 60000})
                     await asyncio.sleep(2)
@@ -65,7 +65,7 @@ async def find_code(page, sorted_url, key):
                             }
                             
                             // Check if the link contains the text 'NEXT'
-                            if (link.textContent.includes('NEXT')) {
+                            if (link.textContent.includes('NEXT') || link.textContent.includes('>')) {
                                 return link.href;
                             }
                         }
@@ -318,34 +318,40 @@ async def find_code(page, sorted_url, key):
                       return text_value
             
             async def find_code_by_p(page, text_value):
-                if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url:
+                if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url or 'clashranger.com':
                     b_tags = await page.querySelectorAll('b')
+                    span_tags = await page.querySelectorAll('span')
+
+                    b_tags = b_tags + span_tags
+
                     for b_element in b_tags[::-1]:
                         b_text = await page.evaluate('(element) => element.textContent', b_element)
-                        if len(b_text) == 5 and b_text[0] == 'A':
+                        if len(b_text) == 5 and b_text[0] == 'C' and 'code' not in b_text.lower():
                             text_value[0] = b_text
                             text_value[1] = page.url
-
+                            print(1)
                             return
-                p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
-                if p_tags:
-                    for p_element in p_tags[::-1]:
-                        text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
-                        text_lower = text_lower_.lower()
-                        if 'prnt' in text_lower or 'manual' in text_lower or 'https' in text_lower:
-                            continue
-                        if (any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55) or ('for proof' in text_lower):
-                            if len(text_lower_) > 0:
-                                if ':' in text_lower_:
-                                    text_value[0] = text_lower_.split(':')[1].strip()
+                else:
+                    p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
+                    if p_tags:
+                        for p_element in p_tags[::-1]:
+                            text_lower_ = await page.evaluate('(element) => element.textContent', p_element)
+                            text_lower = text_lower_.lower()
+                            if 'prnt' in text_lower or 'manual' in text_lower or 'https' in text_lower:
+                                continue
+                            if (any(keyword in text_lower for keyword in ['code :', 'code:', 'codes:', 'codes :', 'hint cd:']) and 9 < len(text_lower) < 55) or ('for proof' in text_lower):
+                                if len(text_lower_) > 0:
+                                    print(2)
+                                    if ':' in text_lower_:
+                                        text_value[0] = text_lower_.split(':')[1].strip()
+                                    else:
+                                        text_value[0] = text_lower_.strip()
+                                    if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
+                                        text_value[0] = text_value[0][1:-1]
+                                    text_value[1] = page.url
+                                    return
                                 else:
-                                    text_value[0] = text_lower_.strip()
-                                if len(text_value[0]) >= 2 and text_value[0][0] == '{' and text_value[0][-1] == '}':
-                                    text_value[0] = text_value[0][1:-1]
-                                text_value[1] = page.url
-                                return
-                            else:
-                                return
+                                    return
 
             await find_code_by_p(page, text_value)
 
