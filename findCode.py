@@ -329,7 +329,6 @@ async def find_code(page, sorted_url, key):
                         if len(b_text) == 5 and b_text[0] == 'C' and 'code' not in b_text.lower():
                             text_value[0] = b_text
                             text_value[1] = page.url
-                            print(1)
                             return
                 else:
                     p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
