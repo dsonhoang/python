@@ -337,7 +337,7 @@ async def find_code(page, sorted_url, key):
                     # Process the text content of red spans
                     for text in red_spans:
                         text = text.strip()
-                        if len(text) == 5 and text.startswith('A') and 'S' in text:
+                        if len(text) == 5 and text.startswith('C')t:
                             text_value[0] = text
                             text_value[1] = page.url
                             return
