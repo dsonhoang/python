@@ -328,17 +328,20 @@ async def find_code(page, sorted_url, key):
             
             async def find_code_by_p(page, text_value):
                 if 'evolva.site' in page.url or 'baelax.site' in page.url or 'venoms.site' in page.url or 'clashranger.com':
-                    b_tags = await page.querySelectorAll('b')
-                    span_tags = await page.querySelectorAll('span')
+                    red_spans = await page.evaluate('''() => {
+                        return Array.from(document.querySelectorAll('span')).filter(span => {
+                            return window.getComputedStyle(span).color === 'rgb(255, 0, 0)';
+                        }).map(span => span.textContent);
+                    }''')
 
-                    b_tags = b_tags + span_tags
-
-                    for b_element in b_tags[::-1]:
-                        b_text = await page.evaluate('(element) => element.textContent', b_element)
-                        if len(b_text) == 5 and b_text[0] == 'C' and 'code' not in b_text.lower():
-                            text_value[0] = b_text
+                    # Process the text content of red spans
+                    for text in red_spans:
+                        text = text.strip()
+                        if len(text) == 5 and text.startswith('A') and 'S' in text:
+                            text_value[0] = text
                             text_value[1] = page.url
                             return
+
                 else:
                     p_tags = await page.querySelectorAll('p, li, h1, h2, h3, strong, span, font')
                     if p_tags:
