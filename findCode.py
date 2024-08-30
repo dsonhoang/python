@@ -83,7 +83,6 @@ async def find_code(page, sorted_url, key):
                         element = soup.find(id='download')
                         
                         if element:
-                            print('ok')
                             element_text = element.get_text().strip()
                             print(element_text)
                             if len(element_text) > 0:
