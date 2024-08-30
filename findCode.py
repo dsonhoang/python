@@ -20,6 +20,8 @@ async def find_code(page, sorted_url, key):
             try:
                 if 'unidosenoracion.org' in i:
                     i = 'https://unidosenoracion.org/united-in-prayer/'
+                elif 'sarkariaadmi' in i:
+                    i = 'https://sarkariaadmi.com/mohun-bagan-sg-triumphs-over-bengaluru-fc-4-3/'
                 await page.goto(i, {'timeout': 60000})
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
@@ -71,10 +73,10 @@ async def find_code(page, sorted_url, key):
                         return null; // Return null if no matching link is found
                     }''')
 
-                    if (await page.querySelectorAll('.srd') and not next_href) or not next_href:
+                    if ((await page.querySelectorAll('.srd') or await page.querySelectorAll('[clashaderutis=srd]')) and not next_href) or not next_href:
                         break
 
-                if await page.querySelectorAll('.srd'):
+                if await page.querySelectorAll('.srd') or await page.querySelectorAll('[clashaderutis=srd]'):
                     page_url = page.url
                     
                     response = requests.get(page_url, timeout=10)
@@ -83,7 +85,9 @@ async def find_code(page, sorted_url, key):
                         element = soup.find(id='download')
                         
                         if element:
+                            print('ok')
                             element_text = element.get_text().strip()
+                            print(element_text)
                             if len(element_text) > 0:
                                 return [element_text, page_url]
                             else:
@@ -118,6 +122,20 @@ async def find_code(page, sorted_url, key):
                         return ['', '']
                 except:
                     return ['', '']
+
+            if await page.querySelectorAll('.g-btn'):
+                for _ in range(10):
+                    next_btn = await page.querySelector('.g-btn')
+                    next_btn_title = await page.evaluate('(element) => element.getAttribute("title")', next_btn)
+                    if next_btn_title.lower() == 'next':
+                        next_href = await page.evaluate('(element) => element.dataset.externalUrl', next_btn)
+                        await page.goto(next_href)
+                        await asyncio.sleep(2)
+                    elif next_btn_title.lower() == 'get code':
+                        code_text = await page.evaluate('(element) => element.dataset.msg', next_btn)
+                        return [code_text, page.url]
+                    else:
+                        break
             
             if await page.querySelectorAll('.detail_lagi'):
                 await page.goto('view-source:'+i, {'timeout': 60000})
@@ -275,6 +293,7 @@ async def find_code(page, sorted_url, key):
             
             kode_element = await page.querySelector('#kode')
             if kode_element:
+                await asyncio.sleep(65)
                 s = await page.evaluate('(element) => element.textContent', kode_element)
 
                 if ':' in s:
