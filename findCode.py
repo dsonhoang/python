@@ -20,6 +20,8 @@ async def find_code(page, sorted_url, key):
             try:
                 if 'unidosenoracion.org' in i:
                     i = 'https://unidosenoracion.org/united-in-prayer/'
+                elif 'sarkariaadmi' in i:
+                    i = 'https://sarkariaadmi.com/paris-paralympics-2024-indias-schedule-and/'
                 await page.goto(i, {'timeout': 60000})
                 await asyncio.sleep(1)
                 await page.evaluate('() => window.scrollTo(0, document.documentElement.scrollHeight)')
@@ -133,7 +135,12 @@ async def find_code(page, sorted_url, key):
                         return [code_text, page.url]
                     else:
                         break
-            
+
+            if 'semuaja' in i and await page.querySelectorAll('.google-anno-skip'):
+                ads_element = await page.querySelector('.google-anno-skip')
+                ads_text = await page.evaluate('(element) => element.textContent', ads_element)
+                return [ads_text, page.url]
+
             if await page.querySelectorAll('.detail_lagi'):
                 await page.goto('view-source:'+i, {'timeout': 60000})
                 await asyncio.sleep(2)
